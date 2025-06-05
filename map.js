@@ -16,7 +16,7 @@ async function createMapPanes(layers) {
   layers.forEach(layer => {
     const existingPane = Object.keys(map.getPanes()).find(pane => pane == layer.id);
 
-    if(!existingPane) {
+    if (!existingPane) {
       map.createPane(`${layer.id}`);
       map.getPane(`${layer.id}`).style.zIndex = 400 + layer.z_index;
     }
@@ -24,6 +24,8 @@ async function createMapPanes(layers) {
 }
 
 async function setupMap() {
+  addInfoBox();
+
   const layers_2024 = await setupDataForYear(2024);
   const layers_2025 = await setupDataForYear(2025);
 
@@ -51,7 +53,7 @@ async function setupDataForYear(year) {
       entry.name :
       `${category.name} - ${entry.name}`;
 
-    if(entry.body) {
+    if (entry.body) {
       popupData += `<br>${entry.body}`;
     }
 
@@ -64,6 +66,24 @@ async function setupDataForYear(year) {
   });
 
   return year_layergroup;
+}
+
+function addInfoBox() {
+  const infoContol = L.control();
+
+  infoContol.onAdd = function (map) {
+    const _div = L.DomUtil.create('div', 'info');
+
+    _div.innerHTML = `<h4>GMM Map comparison</h4>
+      <div>
+        This simple tool shows the differences in the festival terrain between 2024 (left) and 2025 (right).<br>
+        Drag the slider to start comparing!
+      </div>
+    `
+    return _div;
+  };
+
+  infoContol.addTo(map);
 }
 
 setupMap();
