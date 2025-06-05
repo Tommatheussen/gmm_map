@@ -47,12 +47,20 @@ async function setupDataForYear(year) {
 
     const color = category?.color || '#FF0000';
 
+    let popupData = category.name == entry.name ?
+      entry.name :
+      `${category.name} - ${entry.name}`;
+
+    if(entry.body) {
+      popupData += `<br>${entry.body}`;
+    }
+
     L.polygon(entry.coordinates, {
       color: color,
       strokeOpacity: 0.8,
       fillOpacity: 0.35,
       pane: `${entry.category_id}`
-    }).addTo(year_layergroup).bindPopup(`${category.name} - ${entry.name}`);
+    }).addTo(year_layergroup).bindPopup(popupData);
   });
 
   return year_layergroup;
