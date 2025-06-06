@@ -141,3 +141,24 @@
     margin: 0 0 5px;
     color: #777;
 }
+.popup-title {
+  margin: 0;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: fit-content;
+  width: max-content;
+  gap: 4px;
+}
+.popup-tag {
+  max-width: max-content;
+  border-radius: 6px;
+  padding: 6px;
+  background-color: lightskyblue;
+}
+.popup-content {
+  gap: 8px;
+  display: flex;
+  flex-direction: column;
+}

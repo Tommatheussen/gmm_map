@@ -55,15 +55,24 @@ async function setupDataForYear(year) {
 
     const color = category?.color || '#FF0000';
 
-    let popupData = category.name == entry.name ?
-      entry.name :
-      `${category.name} - ${entry.name}`;
+    let popupData = `
+      <div class="popup-content">
+        <h4 class="popup-title">
+          ${category.name.trim() == entry.name.trim() ? entry.name : category.name + " - " + entry.name}
+        </h4>
+    `;
 
-    if (entry.body) {
-      popupData += `<br>${entry.body}`;
+    if (entry.tags && entry.tags.length > 0) {
+      popupData += createTags(entry.tags)
     }
 
+    // if (entry.body) {
+    //   popupData += `<br>${entry.body}`;
+    // }
+
     const isGroundLayer = groundLayersFixedIds.includes(category.fixed_id);
+
+    popupData += "</div>";
 
     L.polygon(entry.coordinates, {
       color: color,
@@ -75,6 +84,17 @@ async function setupDataForYear(year) {
   });
 
   return year_layergroup;
+}
+
+function createTags(tags) {
+  let content = `<div class="tags">`
+
+  tags.forEach(tag => {
+    content += `<span class="popup-tag">${tag.name}</span>`
+  });
+
+  content += `</div>`;
+  return content;
 }
 
 function addInfoBox() {
