@@ -12,6 +12,12 @@ async function loadDataForYear(year) {
   return { pois, layers }
 }
 
+const groundLayersFixedIds = [
+  44,
+  35,
+  20
+]
+
 async function createMapPanes(layers) {
   layers.forEach(layer => {
     const existingPane = Object.keys(map.getPanes()).find(pane => pane == layer.id);
@@ -57,10 +63,13 @@ async function setupDataForYear(year) {
       popupData += `<br>${entry.body}`;
     }
 
+    const isGroundLayer = groundLayersFixedIds.includes(category.fixed_id);
+
     L.polygon(entry.coordinates, {
       color: color,
-      strokeOpacity: 0.8,
-      fillOpacity: 0.35,
+      strokeWidth: 1,
+      strokeOpacity: isGroundLayer ? 1 : 0.75,
+      fillOpacity: isGroundLayer ? 1 : 0.75,
       pane: `${entry.category_id}`
     }).addTo(year_layergroup).bindPopup(popupData);
   });
