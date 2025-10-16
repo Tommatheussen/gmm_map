@@ -1,14 +1,13 @@
 <script lang="ts">
-	export let years = [2022, 2023, 2024];
-	let selectedYear = 2024;
-
-	let options = [
-		{ id: 'compare', label: 'Compare Mode', checked: false },
-		{ id: 'labels', label: 'Show Labels', checked: true }
-	];
+	import Svelecte from 'svelecte';
+	import { years, selectedYear } from '$lib/stores/MapState';
 </script>
 
 <aside class="sidebar">
+	<h2>🗓 Map Year</h2>
+	<Svelecte options={$years} bind:value={$selectedYear}></Svelecte>
+
+	<!--
 	<h2 class="text-lg font-semibold mb-2">Year</h2>
 	<select bind:value={selectedYear} class="w-full p-1 border rounded">
 		{#each years as year}
@@ -24,7 +23,7 @@
 				{opt.label}
 			</label>
 		{/each}
-	</div>
+	</div> -->
 </aside>
 
 <style>
