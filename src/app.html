@@ -8,6 +8,23 @@
   <link rel="icon" href="favicon.svg" />
   %sveltekit.head%
 </head>
+<style>
+  :root {
+    --header-height: 60px;
+    --footer-height: 40px;
+    --sidebar-width: 250px;
+    --bg-color: #f9f9f9;
+    --accent: #2563eb;
+  }
+
+  html,
+  body {
+    margin: 0;
+    height: 100%;
+    font-family: system-ui, sans-serif;
+    background-color: var(--bg-color);
+  }
+</style>
 
 <body data-sveltekit-preload-data="hover">
   <div style="display: contents">%sveltekit.body%</div>
