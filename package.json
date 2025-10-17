@@ -22,8 +22,7 @@
     "url": "https://github.com/Tommatheussen/gmm_map/issues"
   },
   "dependencies": {
-    "leaflet": "^2.0.0-alpha.1",
-    "svelecte": "~5.3.0"
+    "leaflet": "^2.0.0-alpha.1"
   },
   "devDependencies": {
     "@eslint/compat": "^1.4.0",

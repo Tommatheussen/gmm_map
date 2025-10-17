@@ -1,35 +1,68 @@
 <script lang="ts">
-	import Svelecte from 'svelecte';
-	import { years, selectedYear } from '$lib/stores/MapState';
+	import { years, mapState } from '$lib/stores/MapState';
+	import Select from './Select.svelte';
+
+	function setBaseYear(year: number | null) {
+		mapState.setBaseLayer(year!);
+	}
+
+	function setCompareYear(year: number | null) {
+		mapState.setCompareLayer(year);
+	}
 </script>
 
 <aside class="sidebar">
-	<h2>🗓 Map Year</h2>
-	<Svelecte options={$years} bind:value={$selectedYear}></Svelecte>
+	{$mapState.baseLayer}
+	<fieldset>
+		<legend>🗓 Base Year</legend>
+		<Select
+			options={$years}
+			value={$mapState.baseLayer}
+			onChange={setBaseYear}
+			placeholder="Select base year"
+		/>
+		<p class="info-text">Select the main year you want to view on the map.</p>
+	</fieldset>
 
-	<!--
-	<h2 class="text-lg font-semibold mb-2">Year</h2>
-	<select bind:value={selectedYear} class="w-full p-1 border rounded">
-		{#each years as year}
-			<option value={year}>{year}</option>
-		{/each}
-	</select>
-
-	<div class="mt-4">
-		<h2 class="text-lg font-semibold mb-2">Options</h2>
-		{#each options as opt}
-			<label class="block mb-1">
-				<input type="checkbox" bind:checked={opt.checked} />
-				{opt.label}
-			</label>
-		{/each}
-	</div> -->
+	<fieldset>
+		<legend>🔀 Compare</legend>
+		<Select
+			options={$years}
+			value={$mapState.compareLayer}
+			onChange={setCompareYear}
+			placeholder="Select comparison year"
+			clearOption
+		/>
+		<p class="info-text">
+			Optionally select another year to compare with the base year. If no year is selected, only the
+			base year will be visible.
+		</p>
+	</fieldset>
 </aside>
 
 <style>
 	.sidebar {
-		background-color: #fff;
-		border-right: 1px solid #ddd;
 		padding: 1rem;
+		background-color: var(--bg-color);
+		border-right: 1px solid #ddd;
+	}
+
+	fieldset {
+		border: 1px solid #ddd;
+		padding: 0.75rem;
+		margin-bottom: 1rem;
+		border-radius: 6px;
+	}
+
+	legend {
+		font-weight: bold;
+		font-size: x-large;
+	}
+
+	.info-text {
+		font-size: 0.85rem;
+		color: #555;
+		margin-top: 0.3rem;
+		font-style: italic;
 	}
 </style>

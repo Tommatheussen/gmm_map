@@ -3,10 +3,25 @@ import { writable } from 'svelte/store';
 // list of available years
 export const years = writable<number[]>([]);
 
-// currently selected year for map
-export const selectedYear = writable<number | null>(null);
+interface MapState {
+  baseLayer: number | null;
+  compareLayer: number | null; // null = single layer mode
+}
 
-// compare mode
-export const compareMode = writable(false);
-export const compareFrom = writable<number | null>(null);
-export const compareTo = writable<number | null>(null);
+function createMapStateStore() {
+  const { subscribe, set, update } = writable<MapState>({
+    baseLayer: null,
+    compareLayer: null
+  });
+
+  return {
+    subscribe,
+    setBaseLayer: (layer: number) =>
+      update(state => ({ ...state, baseLayer: layer })),
+    setCompareLayer: (layer: number | null) =>
+      update(state => ({ ...state, compareLayer: layer })),
+    reset: () => set({ baseLayer: null, compareLayer: null })
+  };
+}
+
+export const mapState = createMapStateStore();

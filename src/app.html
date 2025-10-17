@@ -4,15 +4,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <link rel="icon" href="favicon.svg" />
+  <link rel="icon" href="favicon.png" />
   %sveltekit.head%
 </head>
 <style>
   :root {
     --header-height: 60px;
     --footer-height: 40px;
-    --sidebar-width: 250px;
+    --sidebar-width: 300px;
     --bg-color: #f9f9f9;
     --accent: #2563eb;
   }
@@ -23,6 +22,17 @@
     height: 100%;
     font-family: system-ui, sans-serif;
     background-color: var(--bg-color);
+  }
+
+  .leaflet-splitview-divider::before {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 50px;
+    top: calc(50% - 25px);
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    left: -6px;
   }
 </style>
 

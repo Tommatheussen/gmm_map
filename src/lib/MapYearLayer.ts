@@ -23,10 +23,17 @@ export class MapYearLayer {
   constructor(map: LeafletMap, year: number) {
     this.map = map;
     this.year = year;
-    this.rootGroup = new LayerGroup().addTo(map);
+    this.rootGroup = new LayerGroup();
   }
 
-  async load() {
+  async init() {
+    if (this.categories.length == 0 || this.pois.length == 0) {
+      await this.load();
+    }
+    this.rootGroup.addTo(this.map);
+  }
+
+  private async load() {
     this.categories = await dataCache.categories(this.year);
     this.pois = await dataCache.pois(this.year);
     this._buildLayers();
@@ -36,6 +43,7 @@ export class MapYearLayer {
     const paneName = `year-${this.year}-cat-${category.fixed_id}`;
     if (this.map.getPane(paneName) == undefined) {
       const pane = this.map.createPane(paneName);
+      pane.dataset.year = this.year.toString();
       pane.style.zIndex = String(BASE_Z_INDEX + (category.z_index ?? 0));
     }
   }
@@ -46,7 +54,9 @@ export class MapYearLayer {
     for (const cat of this.categories) {
       this._ensureMapPaneExists(cat);
 
-      const group = new FeatureGroup<Polygon>([]);
+      const group = new FeatureGroup<Polygon>([], {
+        pane: `year-${this.year}-cat-${cat.fixed_id}`
+      });
 
       this.categoryLayers.set(cat.fixed_id, group);
 

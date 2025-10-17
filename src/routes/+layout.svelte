@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { APP_TITLE, APP_DESCRIPTION } from '$lib/Config';
 	import { onMount } from 'svelte';
 	import Header from '$lib/components/Header.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 
-	import { years, selectedYear } from '$lib/stores/MapState';
+	import { years, mapState } from '$lib/stores/MapState';
 
 	async function loadYears(): Promise<Record<string, object>> {
 		const res = await fetch('/years.json');
@@ -21,13 +22,18 @@
 			years.set(availableYears);
 
 			// set default to latest year
-			selectedYear.set(Math.max(...availableYears));
+			mapState.setBaseLayer(Math.max(...availableYears));
 		} catch (err) {
 			console.error('Failed to load years.json', err);
 		}
 	});
 	let { children } = $props();
 </script>
+
+<svelte:head>
+	<title>{APP_TITLE}</title>
+	<meta name="description" content={APP_DESCRIPTION} />
+</svelte:head>
 
 <div class="layout">
 	<Header />
