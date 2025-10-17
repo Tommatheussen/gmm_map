@@ -10,9 +10,3 @@ export const selectedYear = writable<number | null>(null);
 export const compareMode = writable(false);
 export const compareFrom = writable<number | null>(null);
 export const compareTo = writable<number | null>(null);
-
-// cache for already loaded JSON files
-export const mapData = writable<Record<
-  number,
-  { layers?: object[]; pois?: object[] }
->>({});

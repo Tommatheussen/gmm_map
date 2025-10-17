@@ -1,28 +1,38 @@
 <script lang="ts">
-	import type { Map } from 'leaflet';
+	import { Map as LeafletMap, TileLayer } from 'leaflet';
 	import 'leaflet/dist/leaflet.css';
-	import type { Attachment } from 'svelte/attachments';
-  import { selectedYear } from '$lib/stores/MapState'
+	import { selectedYear } from '$lib/stores/MapState';
+	import { MapYearLayer } from '$lib/MapYearLayer';
 
-	let map: Map;
+	let map: LeafletMap;
+	let shownLayer: MapYearLayer;
 
-	async function createMap(container: HTMLElement) {
-    console.debug("Element added, creating map")
-		const L = (await import('leaflet')).default;
+	function createMap(container: HTMLElement) {
+		map = new LeafletMap(container).setView([51.22793672757168, 5.0726501221594955], 18);
 
-		map = L.map(container).setView([51.22793672757168, 5.0726501221594955], 18);
-
-		L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		new TileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			maxZoom: 22,
 			attribution: `&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>`
 		}).addTo(map);
 
-    subscribeToChanges()
-  }
+		subscribeToChanges();
+	}
 
-  function subscribeToChanges() {
-    selectedYear.subscribe(year => console.log(year))
-  }
+	function subscribeToChanges() {
+		selectedYear.subscribe(async (year) => {
+			if (!year) return;
+
+			console.log(shownLayer);
+
+			if (shownLayer) {
+				shownLayer.remove();
+			}
+
+			shownLayer = new MapYearLayer(map, year);
+			await shownLayer.load();
+			// shownLayer = layer;
+		});
+	}
 </script>
 
 <div {@attach createMap} class="map-container"></div>

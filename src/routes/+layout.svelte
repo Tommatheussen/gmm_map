@@ -4,7 +4,13 @@
 	import Footer from '$lib/components/Footer.svelte';
 
 	import { years, selectedYear } from '$lib/stores/MapState';
-	import { loadYears } from '$lib/DataLoader';
+
+	async function loadYears(): Promise<Record<string, object>> {
+		const res = await fetch('/years.json');
+		if (!res.ok) throw new Error('Failed to load years.json');
+		const data = await res.json();
+		return data;
+	}
 
 	onMount(async () => {
 		try {
