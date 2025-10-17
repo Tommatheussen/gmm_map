@@ -57,6 +57,12 @@ export class SplitviewControl extends Control {
 
   private _initLayout() {
     const div = DomUtil.create('div', 'leaflet-splitview-divider', this._map!.getContainer());
+    const badges = DomUtil.create('div', 'leaflet-splitview-divider-badges', div);
+    const leftBadge = DomUtil.create('div', 'leaflet-splitview-divider-badge left', badges);
+    leftBadge.textContent = this._leftLayerGroup!.year.toString();
+    const rightBadge = DomUtil.create('div', 'leaflet-splitview-divider-badge right', badges);
+    rightBadge.textContent = this._rightLayerGroup!.year.toString();
+
     div.style.position = 'absolute';
     div.style.top = '0';
     div.style.bottom = '0';
