@@ -1,7 +1,7 @@
 {
 	"name": "GMM Map tool",
 	"image": "mcr.microsoft.com/devcontainers/typescript-node",
-	"postCreateCommand": "npm install",
+	"postCreateCommand": "npm ci && npm run prepare",
 	"customizations": {
 		"vscode": {
 			"settings": {
