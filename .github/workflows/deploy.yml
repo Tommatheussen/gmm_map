@@ -1,8 +1,8 @@
 name: Build and deploy to Github Pages
 
 on:
-  push:
-    branches: [dev]
+  release:
+    types: [published]
 
 concurrency:
   group: 'pages'
