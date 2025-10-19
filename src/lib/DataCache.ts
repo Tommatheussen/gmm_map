@@ -1,5 +1,5 @@
-import type { Category } from './interfaces/category';
-import type { Poi } from './interfaces/poi';
+import type { Category } from './interfaces/Category';
+import type { Poi } from './interfaces/Poi';
 
 interface YearData {
 	categories: Category[];
