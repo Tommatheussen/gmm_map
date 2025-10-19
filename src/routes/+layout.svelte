@@ -7,7 +7,7 @@
 	import { years, mapState } from '$lib/stores/MapState';
 
 	async function loadYears(): Promise<Record<string, object>> {
-		const res = await fetch('/years.json');
+		const res = await fetch('years.json');
 		if (!res.ok) throw new Error('Failed to load years.json');
 		const data = await res.json();
 		return data;
