@@ -54,7 +54,7 @@
 				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 				<li class:selected={!value} on:click={() => selectOption()}>Don't compare</li>
 			{/if}
-			{#each options as option}
+			{#each options as option, index (index)}
 				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 				<li class:selected={option === value} on:click={() => selectOption(option)}>
 					{option}
