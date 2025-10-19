@@ -62,8 +62,8 @@ jobs:
 
       - name: Inject version into app
         run: |
-          echo "export const APP_VERSION = '${{ needs.tab.outputs.version }}';" > src/lib/Version.ts
-          echo "Version injected: ${{ needs.tab.outputs.version }}"
+          echo "export const APP_VERSION = '${{ needs.tag.outputs.version }}';" > src/lib/Version.ts
+          echo "Version injected: ${{ needs.tag.outputs.version }}"
 
       - name: Build
         run: npm run build
