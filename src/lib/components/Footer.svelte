@@ -1,12 +1,14 @@
 <script>
 	import { APP_TITLE } from '$lib/Config';
+	import { APP_VERSION } from '$lib/Version';
 </script>
 
 <footer class="footer">
 	<div class="footer-left">
 		<small>
 			© {new Date().getFullYear()}
-			{APP_TITLE} v1.0 — Unofficial fan project, not affiliated with Graspop Metal Meeting.
+			{APP_TITLE}
+			({APP_VERSION}) — Unofficial fan project, not affiliated with Graspop Metal Meeting.
 		</small>
 	</div>
 
