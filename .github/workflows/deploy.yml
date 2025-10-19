@@ -15,6 +15,7 @@ jobs:
 
     outputs:
       version: ${{ steps.tag.outputs.tag }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -61,8 +62,8 @@ jobs:
 
       - name: Inject version into app
         run: |
-          echo "export const APP_VERSION = '${{ needs.tab.outputs.tag }}';" > src/lib/Version.ts
-          echo "Version injected: ${{ needs.tab.outputs.tag }}"
+          echo "export const APP_VERSION = '${{ needs.tab.outputs.version }}';" > src/lib/Version.ts
+          echo "Version injected: ${{ needs.tab.outputs.version }}"
 
       - name: Build
         run: npm run build
