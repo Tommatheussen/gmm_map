@@ -13,6 +13,8 @@ jobs:
     permissions:
       contents: write
 
+    outputs:
+      version: ${{ steps.tag.outputs.tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,8 +37,8 @@ jobs:
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ steps.tag_version.outputs.new_tag }}
-          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          tag: ${{ steps.tag.outputs.tag }}
+          name: Release ${{ steps.tag.outputs.tag }}
 
   # Build job
   build:
@@ -59,8 +61,8 @@ jobs:
 
       - name: Inject version into app
         run: |
-          echo "export const APP_VERSION = '${{ github.event.release.tag_name }}';" > src/lib/Version.ts
-          echo "Version injected: ${{ github.event.release.tag_name }}"
+          echo "export const APP_VERSION = '${{ needs.tab.outputs.tag }}';" > src/lib/Version.ts
+          echo "Version injected: ${{ needs.tab.outputs.tag }}"
 
       - name: Build
         run: npm run build
