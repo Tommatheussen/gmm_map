@@ -15,7 +15,7 @@
 	let compareLayer: MapYearLayer | null;
 
 	function createMap(container: HTMLElement) {
-		map = new LeafletMap(container).setView([51.22793672757168, 5.0726501221594955], 18);
+		map = new LeafletMap(container).setView([51.22793672757168, 5.072650122159495], 18);
 
 		new TileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			maxZoom: 22,
@@ -35,8 +35,6 @@
 	async function updateLayers(baseYear: number | null, compareYear: number | null) {
 		if (!baseYear) return;
 		if (baseYear == compareYear) return;
-
-		console.log(baseYear, compareYear);
 
 		const oldBaseYear = baseLayer?.year;
 		const oldCompareYear = compareLayer?.year;
