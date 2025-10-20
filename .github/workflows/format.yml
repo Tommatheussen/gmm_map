@@ -1,8 +1,7 @@
-name: Check code formatting
+name: Code formatting
 
 on:
   push:
-  workflow_dispatch: {} # Optional manual trigger
 
 jobs:
   lint:
