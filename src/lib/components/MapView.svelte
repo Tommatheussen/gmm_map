@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { Map as LeafletMap, TileLayer } from 'leaflet';
+  import { LatLng, LatLngBounds, Map as LeafletMap, TileLayer } from 'leaflet';
   import 'leaflet/dist/leaflet.css';
   import '$lib/LoadingOverlay';
   import { mapState } from '$lib/stores/MapState';
   import { MapYearLayer } from '$lib/MapYearLayer';
   import { SplitviewControl } from '$lib/SplitviewControl';
   import { layerCache } from '$lib/LayerCache';
+  import { MAP_BOUNDS_NORTH_EAST, MAP_BOUNDS_SOUTH_WEST, MAP_CENTER } from '$lib/Config';
 
   const splitControl: SplitviewControl = new SplitviewControl();
   let map: LeafletMap;
@@ -13,10 +14,15 @@
   let compareLayer: MapYearLayer | null;
 
   function createMap(container: HTMLElement) {
-    map = new LeafletMap(container).setView([51.22793672757168, 5.072650122159495], 18);
+    map = new LeafletMap(container, {
+      center: new LatLng(MAP_CENTER),
+      zoom: 18,
+      maxZoom: 20,
+      minZoom: 15,
+      maxBounds: new LatLngBounds(MAP_BOUNDS_SOUTH_WEST, MAP_BOUNDS_NORTH_EAST)
+    });
 
     new TileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 22,
       attribution: `&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>`
     }).addTo(map);
 
