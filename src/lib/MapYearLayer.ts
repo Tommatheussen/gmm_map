@@ -19,9 +19,12 @@ export class MapYearLayer {
     this.map = map;
     this.year = year;
     this.rootGroup = new LayerGroup();
+    this.rootGroup.on('add', () => this.map.markLayerDone());
   }
 
   async init() {
+    this.map.markLayerLoading();
+
     if (this.categories.length == 0 || this.pois.length == 0) {
       await this.load();
     }

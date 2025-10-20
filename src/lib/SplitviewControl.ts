@@ -1,4 +1,4 @@
-import { Control, type ControlPosition, DomEvent, DomUtil, Map } from 'leaflet';
+import { Control, DomEvent, DomUtil, Map } from 'leaflet';
 
 import type { MapYearLayer } from './MapYearLayer';
 
@@ -10,8 +10,8 @@ export class SplitviewControl extends Control {
   private _splitposition: number = 0.5; // 0–1 fraction of map width
   private _dragging = false;
 
-  constructor(options?: { position?: ControlPosition; initialSplit?: number }) {
-    super(options);
+  constructor(options?: { initialSplit?: number }) {
+    super({ position: 'topleft' });
     this._splitposition = options?.initialSplit ?? 0.5;
   }
 

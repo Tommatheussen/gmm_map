@@ -1,15 +1,13 @@
 <script lang="ts">
   import { Map as LeafletMap, TileLayer } from 'leaflet';
   import 'leaflet/dist/leaflet.css';
+  import '$lib/LoadingOverlay';
   import { mapState } from '$lib/stores/MapState';
   import { MapYearLayer } from '$lib/MapYearLayer';
   import { SplitviewControl } from '$lib/SplitviewControl';
   import { layerCache } from '$lib/LayerCache';
 
-  const splitControl: SplitviewControl = new SplitviewControl({
-    position: 'topleft'
-  });
-
+  const splitControl: SplitviewControl = new SplitviewControl();
   let map: LeafletMap;
   let baseLayer: MapYearLayer | null;
   let compareLayer: MapYearLayer | null;
