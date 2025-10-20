@@ -1,6 +1,6 @@
 import type { Map as LeafletMap } from 'leaflet';
 
-import { MapYearLayer } from './MapYearLayer';
+import { MapYearLayer } from './leaflet/MapYearLayer';
 
 class LayerCache {
   private cache: Map<number, MapYearLayer> = new Map();

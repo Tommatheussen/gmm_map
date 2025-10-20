@@ -1,10 +1,10 @@
 <script lang="ts">
   import { LatLng, LatLngBounds, Map as LeafletMap, TileLayer } from 'leaflet';
   import 'leaflet/dist/leaflet.css';
-  import '$lib/LoadingOverlay';
+  import '$lib/leaflet/LoadingOverlay';
   import { mapState } from '$lib/stores/MapState';
-  import { MapYearLayer } from '$lib/MapYearLayer';
-  import { SplitviewControl } from '$lib/SplitviewControl';
+  import { MapYearLayer } from '$lib/leaflet/MapYearLayer';
+  import { SplitviewControl } from '$lib/leaflet/SplitviewControl';
   import { layerCache } from '$lib/LayerCache';
   import { MAP_BOUNDS_NORTH_EAST, MAP_BOUNDS_SOUTH_WEST, MAP_CENTER } from '$lib/Config';
 
