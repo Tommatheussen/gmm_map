@@ -2,7 +2,7 @@
   import { appState } from '$lib/data/State.svelte';
   import { onMount } from 'svelte';
 
-  let { value, clearOption = false, placeholder } = $props();
+  let { value = $bindable(), clearOption = false, placeholder } = $props();
   let options = appState.years;
 
   let open = $state(false);

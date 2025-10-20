@@ -7,19 +7,29 @@ export class SplitviewControl extends Control {
   private _leftLayerGroup?: MapYearLayer;
   private _rightLayerGroup?: MapYearLayer;
   private _divider?: HTMLElement;
+  private _leftBadge?: HTMLElement;
+  private _rightBadge?: HTMLElement;
   private _splitposition: number = 0.5; // 0–1 fraction of map width
   private _dragging = false;
+  private _addedToMap = false;
 
   constructor(options?: { initialSplit?: number }) {
     super({ position: 'topleft' });
     this._splitposition = options?.initialSplit ?? 0.5;
   }
 
+  get isAdded(): boolean {
+    return this._addedToMap;
+  }
+
   onAdd(map: Map) {
-    this._map = map;
-    this._initLayout();
-    this._updateClipping();
-    this._attachEvents();
+    if (!this._addedToMap) {
+      this._map = map;
+      this._initLayout();
+      this._updateClipping();
+      this._attachEvents();
+      this._addedToMap = true;
+    }
     return this._divider!;
   }
 
@@ -35,11 +45,25 @@ export class SplitviewControl extends Control {
 
     // Remove clip-path / clip from left and right year panes
     this._removeClipping();
+
+    this._addedToMap = false;
   }
 
   setLayers(left: MapYearLayer, right: MapYearLayer) {
     this._leftLayerGroup = left;
     this._rightLayerGroup = right;
+    this._updateClipping();
+  }
+
+  setBaseLayer(layer: MapYearLayer) {
+    this._rightLayerGroup = layer;
+    this._setRightBadgeContent();
+    this._updateClipping();
+  }
+
+  setCompareLayer(layer: MapYearLayer) {
+    this._leftLayerGroup = layer;
+    this._setLeftBadgeContent();
     this._updateClipping();
   }
 
@@ -49,13 +73,23 @@ export class SplitviewControl extends Control {
     this._updateClipping();
   }
 
+  private _setLeftBadgeContent() {
+    if (!this._leftBadge) return;
+    this._leftBadge.textContent = this._leftLayerGroup?.year ?? '';
+  }
+
+  private _setRightBadgeContent() {
+    if (!this._rightBadge) return;
+    this._rightBadge.textContent = this._rightLayerGroup?.year ?? '';
+  }
+
   private _initLayout() {
     const div = DomUtil.create('div', 'leaflet-splitview-divider', this._map!.getContainer());
     const badges = DomUtil.create('div', 'leaflet-splitview-divider-badges', div);
-    const leftBadge = DomUtil.create('div', 'leaflet-splitview-divider-badge left', badges);
-    leftBadge.textContent = this._leftLayerGroup!.year.toString();
-    const rightBadge = DomUtil.create('div', 'leaflet-splitview-divider-badge right', badges);
-    rightBadge.textContent = this._rightLayerGroup!.year.toString();
+    this._leftBadge = DomUtil.create('div', 'leaflet-splitview-divider-badge left', badges);
+    this._setLeftBadgeContent();
+    this._rightBadge = DomUtil.create('div', 'leaflet-splitview-divider-badge right', badges);
+    this._setRightBadgeContent();
 
     div.style.position = 'absolute';
     div.style.top = '0';

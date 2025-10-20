@@ -17,13 +17,13 @@
 
   <fieldset>
     <legend>🗓 Year</legend>
-    <Select value={appState.baseYear} placeholder="Select base year" />
+    <Select bind:value={appState.baseYear} placeholder="Select base year" />
     <p class="info-text">Select the year you want to view on the map.</p>
   </fieldset>
 
   <fieldset>
     <legend>🔀 Compare</legend>
-    <Select value={appState.compareYear} placeholder="Select comparison year" clearOption />
+    <Select bind:value={appState.compareYear} placeholder="Select comparison year" clearOption />
     <p class="info-text">
       Optionally select another year to compare with the base year. If no year is selected, only the
       base year will be visible.

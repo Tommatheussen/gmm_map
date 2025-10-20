@@ -7,7 +7,7 @@ const BASE_Z_INDEX = 400;
 const GROUND_LAYERS = [44, 35, 20];
 
 export class MapYearLayer {
-  year: number;
+  year: string;
   map: LeafletMap;
   rootGroup: LayerGroup<LayerGroup<Polygon>>;
   categories: Category[] = [];
@@ -15,7 +15,7 @@ export class MapYearLayer {
   categoryLayers: Map<number, LayerGroup<Polygon>> = new Map();
   visible: Map<number, boolean> = new Map();
 
-  constructor(map: LeafletMap, year: number) {
+  constructor(map: LeafletMap, year: string) {
     this.map = map;
     this.year = year;
     this.rootGroup = new LayerGroup();

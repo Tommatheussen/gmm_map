@@ -2,11 +2,11 @@
   import { LatLng, LatLngBounds, Map as LeafletMap, TileLayer } from 'leaflet';
   import 'leaflet/dist/leaflet.css';
   import '$lib/leaflet/LoadingOverlay';
-  import { mapState } from '$lib/stores/MapState';
   import { MapYearLayer } from '$lib/leaflet/MapYearLayer';
   import { SplitviewControl } from '$lib/leaflet/SplitviewControl';
   import { layerCache } from '$lib/LayerCache';
   import { MAP_BOUNDS_NORTH_EAST, MAP_BOUNDS_SOUTH_WEST, MAP_CENTER } from '$lib/Config';
+  import { appState } from '$lib/data/State.svelte';
 
   const splitControl: SplitviewControl = new SplitviewControl();
   let map: LeafletMap;
@@ -26,48 +26,51 @@
       attribution: `&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>`
     }).addTo(map);
 
-    const unsubscribe = mapState.subscribe(async ({ baseLayer, compareLayer }) => {
-      await updateLayers(baseLayer, compareLayer);
-    });
+    $effect(_handleBaseLayer);
+    $effect(_handleCompareLayer);
 
     return () => {
-      unsubscribe();
       map.remove();
     };
   }
 
-  async function updateLayers(baseYear: number | null, compareYear: number | null) {
-    if (!baseYear) return;
-    if (baseYear == compareYear) return;
+  function _handleBaseLayer() {
+    // Base layer handling
+    if (!appState.baseYear) return; // Only during Init
 
-    const oldBaseYear = baseLayer?.year;
-    const oldCompareYear = compareLayer?.year;
-
-    splitControl.remove();
-
-    if (baseLayer && oldBaseYear != baseYear) {
+    if (baseLayer && map.hasLayer(baseLayer.rootGroup)) {
       baseLayer.remove();
-      baseLayer = null;
-    }
-    if (!baseLayer) {
-      baseLayer = await layerCache.getYearLayer(map, baseYear);
     }
 
-    if (compareLayer && oldCompareYear != compareYear) {
+    layerCache.getYearLayer(map, appState.baseYear).then((layer) => {
+      baseLayer = layer;
+
+      splitControl.setBaseLayer(baseLayer);
+    });
+  }
+
+  function _handleCompareLayer() {
+    // Compare layer handling
+    if (appState.baseYear === appState.compareYear) return;
+
+    if (compareLayer && map.hasLayer(compareLayer.rootGroup)) {
       compareLayer.remove();
-      compareLayer = null;
-    }
-    if (!compareLayer && compareYear) {
-      compareLayer = await layerCache.getYearLayer(map, compareYear);
     }
 
-    if (compareYear) {
-      if (baseYear != oldBaseYear || compareYear != oldCompareYear) {
-        splitControl.setLayers(compareLayer!, baseLayer!);
-      }
+    if (!appState.compareYear) {
+      splitControl.remove();
+      return;
+    }
 
+    if (!splitControl.isAdded) {
       splitControl.addTo(map);
     }
+
+    layerCache.getYearLayer(map, appState.compareYear).then((layer) => {
+      compareLayer = layer;
+
+      splitControl.setCompareLayer(compareLayer);
+    });
   }
 </script>
 

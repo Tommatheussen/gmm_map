@@ -7,10 +7,10 @@ interface YearData {
 }
 
 class DataCache {
-  private cache: Map<number, YearData> = new Map();
+  private cache: Map<string, YearData> = new Map();
 
   // Generic lazy loader
-  private async loadYear(year: number): Promise<YearData> {
+  private async loadYear(year: string): Promise<YearData> {
     if (this.cache.has(year)) return this.cache.get(year)!;
 
     const [categories, pois] = await Promise.all([
@@ -30,18 +30,12 @@ class DataCache {
   }
 
   // Lazy accessors
-  async categories(year: number): Promise<Category[]> {
+  async categories(year: string): Promise<Category[]> {
     return (await this.loadYear(year)).categories;
   }
 
-  async pois(year: number): Promise<Poi[]> {
+  async pois(year: string): Promise<Poi[]> {
     return (await this.loadYear(year)).pois;
   }
-
-  // Optional: preload multiple years
-  async preloadYears(years: number[]): Promise<void> {
-    await Promise.all(years.map((y) => this.loadYear(y)));
-  }
 }
-
 export const dataCache = new DataCache();
