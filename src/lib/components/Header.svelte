@@ -1,14 +1,12 @@
 <script lang="ts">
   import { APP_DESCRIPTION, APP_TITLE_FULL } from '$lib/Config';
-  import { mapState } from '$lib/stores/MapState';
-  import { derived } from 'svelte/store';
+  import { appState } from '$lib/data/State.svelte';
 
-  // Derived store for a readable status line
-  const viewText = derived(mapState, ($mapState) => {
-    const { baseLayer, compareLayer } = $mapState;
+  const viewText = $derived.by(() => {
+    const { baseYear, compareYear } = appState;
 
-    if (compareLayer) return `Comparing: ${compareLayer} (left) ↔ ${baseLayer} (right)`;
-    if (baseLayer) return `Viewing: ${baseLayer}`;
+    if (compareYear) return `Comparing: ${compareYear} (left) ↔ ${baseYear} (right)`;
+    if (baseYear) return `Viewing: ${baseYear}`;
   });
 </script>
 
@@ -18,7 +16,7 @@
   </h2>
 
   <div class="header-center">
-    <h4>{$viewText}</h4>
+    <h4>{viewText}</h4>
   </div>
 
   <div class="header-right">

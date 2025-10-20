@@ -1,27 +1,21 @@
 <script lang="ts">
+  import { appState } from '$lib/data/State.svelte';
   import { onMount } from 'svelte';
 
-  export let options: number[] = [];
-  export let value: number | null = null;
-  export let placeholder = 'Select...';
-  export let disabled = false;
-  export let onChange: (val: number | null) => void = () => {};
-  export let clearOption = false;
+  let { value, clearOption = false, placeholder } = $props();
+  let options = appState.years;
 
-  let open = false;
+  let open = $state(false);
   let selectEl: HTMLDivElement;
 
   function toggle() {
-    if (!disabled) open = !open;
+    open = !open;
   }
 
-  function selectOption(option: number | null = null) {
-    onChange(option);
+  function selectOption(option: string | null = null) {
     value = option;
-    open = false;
   }
 
-  // Optional: close dropdown if user clicks outside
   function handleClickOutside(event: MouseEvent) {
     if (!selectEl.contains(event.target as Node)) {
       open = false;
@@ -36,7 +30,7 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="select" class:disabled bind:this={selectEl} on:click={toggle}>
+<div class="select" bind:this={selectEl} onclick={toggle}>
   <span class="selected">
     {#if value != null}
       {value}
@@ -52,11 +46,11 @@
     <ul class="dropdown">
       {#if clearOption}
         <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-        <li class:selected={!value} on:click={() => selectOption()}>Don't compare</li>
+        <li class:selected={!value} onclick={() => selectOption()}>Don't compare</li>
       {/if}
       {#each options as option, index (index)}
         <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-        <li class:selected={option === value} on:click={() => selectOption(option)}>
+        <li class:selected={option === value} onclick={() => selectOption(option)}>
           {option}
         </li>
       {/each}
@@ -90,12 +84,6 @@
   .select:focus-within {
     border-color: #4a90e2;
     box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.25);
-  }
-
-  .select.disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    background: #f5f5f5;
   }
 
   .selected {

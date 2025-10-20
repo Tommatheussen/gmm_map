@@ -4,7 +4,7 @@
   import Header from '$lib/components/Header.svelte';
   import Footer from '$lib/components/Footer.svelte';
 
-  import { years, mapState } from '$lib/stores/MapState';
+  import { appState } from '$lib/data/State.svelte';
 
   async function loadYears(): Promise<Record<string, object>> {
     const res = await fetch('years.json');
@@ -16,13 +16,10 @@
   onMount(async () => {
     try {
       const data = await loadYears();
-      const availableYears = Object.keys(data)
-        .map(Number)
-        .sort((a, b) => a - b);
-      years.set(availableYears);
+      const availableYears = Object.keys(data).sort().reverse();
 
-      // set default to latest year
-      mapState.setBaseLayer(Math.max(...availableYears));
+      appState.years.push(...availableYears);
+      appState.baseYear = availableYears[0];
     } catch (err) {
       console.error('Failed to load years.json', err);
     }

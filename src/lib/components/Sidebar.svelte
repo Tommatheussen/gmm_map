@@ -1,14 +1,6 @@
 <script lang="ts">
-  import { years, mapState } from '$lib/stores/MapState';
+  import { appState } from '$lib/data/State.svelte';
   import Select from './Select.svelte';
-
-  function setBaseYear(year: number | null) {
-    mapState.setBaseLayer(year!);
-  }
-
-  function setCompareYear(year: number | null) {
-    mapState.setCompareLayer(year);
-  }
 </script>
 
 <aside class="sidebar">
@@ -25,24 +17,13 @@
 
   <fieldset>
     <legend>🗓 Year</legend>
-    <Select
-      options={$years}
-      value={$mapState.baseLayer}
-      onChange={setBaseYear}
-      placeholder="Select base year"
-    />
+    <Select value={appState.baseYear} placeholder="Select base year" />
     <p class="info-text">Select the year you want to view on the map.</p>
   </fieldset>
 
   <fieldset>
     <legend>🔀 Compare</legend>
-    <Select
-      options={$years}
-      value={$mapState.compareLayer}
-      onChange={setCompareYear}
-      placeholder="Select comparison year"
-      clearOption
-    />
+    <Select value={appState.compareYear} placeholder="Select comparison year" clearOption />
     <p class="info-text">
       Optionally select another year to compare with the base year. If no year is selected, only the
       base year will be visible.
