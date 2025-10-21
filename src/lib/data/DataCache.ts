@@ -1,6 +1,6 @@
-import { CATEGORY_REGISTRY } from './data/Categories';
-import type { Category, RawCategory } from './interfaces/Category';
-import type { Poi } from './interfaces/Poi';
+import { CATEGORY_REGISTRY } from '$lib/data/Categories';
+import type { Category, RawCategory } from '$lib/interfaces/Category';
+import type { Poi } from '$lib/interfaces/Poi';
 
 interface YearData {
   categories: Category[];

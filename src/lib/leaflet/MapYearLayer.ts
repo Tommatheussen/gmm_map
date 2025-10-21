@@ -1,4 +1,4 @@
-import { dataCache } from '$lib/DataCache';
+import { dataCache } from '$lib/data/DataCache';
 import type { Category } from '$lib/interfaces/Category';
 import type { Poi } from '$lib/interfaces/Poi';
 import { FeatureGroup, LayerGroup, type Map as LeafletMap, Polygon } from 'leaflet';

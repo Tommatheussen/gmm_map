@@ -1,6 +1,6 @@
 <script lang="ts">
   import { appState } from '$lib/data/State.svelte';
-  import Select from './Select.svelte';
+  import Select from '$lib/components/Select.svelte';
 </script>
 
 <aside class="sidebar">

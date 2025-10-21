@@ -1,6 +1,6 @@
 import { Control, DomEvent, DomUtil, Map } from 'leaflet';
 
-import type { MapYearLayer } from './MapYearLayer';
+import type { MapYearLayer } from '$lib/leaflet/MapYearLayer';
 
 export class SplitviewControl extends Control {
   private _map!: Map;
