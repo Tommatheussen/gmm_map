@@ -5,12 +5,9 @@
   "customizations": {
     "vscode": {
       "settings": {
-        "typescript.tsdk": "node_modules/typescript/lib",
-        "typescript.format.enable": false,
-        "[typescript]": {
-          "editor.formatOnSave": true,
-          "editor.defaultFormatter": "esbenp.prettier-vscode"
-        }
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode" }
       },
       "extensions": [
         "dbaeumer.vscode-eslint",
