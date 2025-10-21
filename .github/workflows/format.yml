@@ -2,6 +2,7 @@ name: Code formatting
 
 on:
   push:
+  workflow_call:
 
 jobs:
   lint:
@@ -11,9 +12,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
