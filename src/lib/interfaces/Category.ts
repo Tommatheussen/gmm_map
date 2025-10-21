@@ -21,7 +21,7 @@ export interface FixedCategory {
   name: string;
   z_index: number;
   color: string;
-  ground: boolean;
+  ground?: boolean;
 }
 
 export interface Category {
