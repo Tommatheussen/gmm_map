@@ -14,5 +14,9 @@ class LayerCache {
     await cacheLayer.init();
     return cacheLayer;
   }
+
+  get cachedEntries() {
+    return this.cache.values();
+  }
 }
 export const layerCache = new LayerCache();

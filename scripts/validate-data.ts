@@ -29,7 +29,7 @@ if (!existsSync(filePath)) {
 const categories: RawCategory[] = JSON.parse(readFileSync(filePath, 'utf-8'));
 
 for (const cat of categories) {
-  const known: FixedCategory = CATEGORY_REGISTRY.get(cat.fixed_id);
+  const known: FixedCategory = CATEGORY_REGISTRY[cat.fixed_id];
   if (!known) {
     console.error(`❌ [${latestYear}] Unknown fixed_id ${cat.fixed_id} (${cat.name})`);
     hasError = true;

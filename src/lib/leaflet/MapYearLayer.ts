@@ -1,4 +1,5 @@
 import { dataCache } from '$lib/data/DataCache';
+import { categoryVisibilityState } from '$lib/data/State.svelte';
 import type { Category } from '$lib/interfaces/Category';
 import type { Poi } from '$lib/interfaces/Poi';
 import { FeatureGroup, LayerGroup, type Map as LeafletMap, Polygon } from 'leaflet';
@@ -11,7 +12,7 @@ export class MapYearLayer {
   rootGroup: LayerGroup<LayerGroup<Polygon>>;
   categories: Category[] = [];
   pois: Poi[] = [];
-  categoryLayers: Map<number, LayerGroup<Polygon>> = new Map();
+  categoryLayers: Map<string, LayerGroup<Polygon>> = new Map();
 
   constructor(map: LeafletMap, year: string) {
     this.map = map;
@@ -36,7 +37,7 @@ export class MapYearLayer {
   }
 
   private _ensureMapPaneExists(category: Category) {
-    const paneName = `year-${this.year}-cat-${category.static_id}`;
+    const paneName = `year-${this.year}-cat-${category.id}`;
     if (this.map.getPane(paneName) == undefined) {
       const pane = this.map.createPane(paneName);
       pane.dataset.year = this.year.toString();
@@ -51,11 +52,14 @@ export class MapYearLayer {
       this._ensureMapPaneExists(cat);
 
       const group = new FeatureGroup<Polygon>([], {
-        pane: `year-${this.year}-cat-${cat.static_id}`
+        pane: `year-${this.year}-cat-${cat.id}`
       });
 
-      this.categoryLayers.set(cat.static_id, group);
-      this.rootGroup.addLayer(group);
+      this.categoryLayers.set(cat.fixed_id, group);
+
+      if (categoryVisibilityState[cat.fixed_id]) {
+        this.rootGroup.addLayer(group);
+      }
     }
 
     for (const poi of this.pois) {
@@ -64,16 +68,21 @@ export class MapYearLayer {
         continue;
       }
 
-      const cat = this.categories.find((c) => c.id === poi.category_id);
+      if (!poi.category_id) {
+        console.debug(`POI has no category: ${poi.id}`);
+        continue;
+      }
+
+      const cat = this.categories.find((c) => c.id === poi.category_id.toString());
       if (!cat) {
         console.warn(`Map layer not found for POI: ${poi.name} (${poi.id})`);
         continue;
       }
 
-      const group = this.categoryLayers.get(cat.static_id);
+      const group = this.getCategoryGroup(cat.fixed_id);
       if (!group) {
         console.error(
-          `Category group not found, this should never happen! POI: ${poi.name} (${poi.id}), Category: ${cat.label} (${cat.static_id})`
+          `Category group not found, this should never happen! POI: ${poi.name} (${poi.id}), Category: ${cat.name} (${cat.fixed_id})`
         );
         continue;
       }
@@ -85,7 +94,7 @@ export class MapYearLayer {
           fillColor: cat.color,
           fillOpacity: cat.ground_layer ? 1 : 0.75,
           weight: 1,
-          pane: `year-${this.year}-cat-${cat.static_id}`
+          pane: `year-${this.year}-cat-${cat.id}`
         });
         polygon.bindPopup(`<strong>${poi.name}</strong>`);
         group.addLayer(polygon);
@@ -95,12 +104,20 @@ export class MapYearLayer {
     }
   }
 
-  getGroup(fixedId: number): LayerGroup | undefined {
-    return this.categoryLayers.get(fixedId);
+  handleCategoryVisibility(category_id: string, visible: boolean): void {
+    const oGr = this.getCategoryGroup(category_id);
+
+    if (!oGr) return;
+
+    if (visible) {
+      if (!this.rootGroup.hasLayer(oGr)) this.rootGroup.addLayer(oGr);
+    } else {
+      if (this.rootGroup.hasLayer(oGr)) this.rootGroup.removeLayer(oGr);
+    }
   }
 
-  getRoot(): LayerGroup {
-    return this.rootGroup;
+  getCategoryGroup(category_id: string): LayerGroup | undefined {
+    return this.categoryLayers.get(category_id);
   }
 
   remove() {

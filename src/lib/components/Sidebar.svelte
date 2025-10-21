@@ -1,6 +1,17 @@
 <script lang="ts">
-  import { appState } from '$lib/data/State.svelte';
+  import { appState, categoryVisibilityState } from '$lib/data/State.svelte';
   import Select from '$lib/components/Select.svelte';
+  import { layerCache } from '$lib/LayerCache';
+  import { CATEGORY_LIST } from '$lib/data/Categories';
+
+  for (const fixedId of Object.keys(categoryVisibilityState)) {
+    $effect(() => {
+      const visible = categoryVisibilityState[fixedId]; // reactive read
+      for (const layer of layerCache.cachedEntries) {
+        layer.handleCategoryVisibility(fixedId, visible);
+      }
+    });
+  }
 </script>
 
 <aside class="sidebar">
@@ -23,6 +34,21 @@
 
   <fieldset>
     <legend>🔀 Compare</legend>
+    <Select bind:value={appState.compareYear} placeholder="Select comparison year" clearOption />
+    <p class="info-text">
+      Optionally select another year to compare with the base year. If no year is selected, only the
+      base year will be visible.
+    </p>
+  </fieldset>
+
+  <fieldset>
+    <legend>🔀 Categories</legend>
+    {#each CATEGORY_LIST as category (category.id)}
+      <label>
+        <input type="checkbox" bind:checked={categoryVisibilityState[category.fixed_id]} />
+        {category.name}
+      </label>
+    {/each}
     <Select bind:value={appState.compareYear} placeholder="Select comparison year" clearOption />
     <p class="info-text">
       Optionally select another year to compare with the base year. If no year is selected, only the

@@ -32,19 +32,19 @@ class DataCache {
 
   private convertCategories(rawCategories: RawCategory[]): Category[] {
     const categories: Category[] = rawCategories.map((category) => {
-      const unifiedCategory = CATEGORY_REGISTRY.get(category.fixed_id);
+      const fixedCategory = CATEGORY_REGISTRY[category.fixed_id];
 
-      if (!unifiedCategory) {
+      if (!fixedCategory) {
         console.warn(`Unified category not found for ID ${category.fixed_id}!`);
       }
 
       return {
-        id: category.id,
-        static_id: category.fixed_id,
-        label: unifiedCategory?.name ?? category.name,
-        z_index: unifiedCategory?.z_index ?? category.z_index,
-        color: unifiedCategory?.color ?? category.color,
-        ground_layer: unifiedCategory?.ground ?? false
+        id: category.id.toString(),
+        fixed_id: category.fixed_id.toString(),
+        name: fixedCategory?.name ?? category.name,
+        z_index: fixedCategory?.z_index ?? category.z_index,
+        color: fixedCategory?.color ?? category.color,
+        ground_layer: fixedCategory?.ground_layer ?? false
       };
     });
     return categories;

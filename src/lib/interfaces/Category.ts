@@ -1,14 +1,17 @@
-export interface RawCategory {
+interface BaseCategory {
+  name: string;
+  z_index: number;
+  color: string;
+}
+
+export interface RawCategory extends BaseCategory {
   id: number;
   fixed_id: number;
-  name: string;
   type: string;
   priority: number;
   clickable: boolean;
-  z_index: number;
   min_zoom_level: number;
   max_zoom_level: number;
-  color: string;
   show_polygon: boolean;
   border: boolean;
   show_marker: boolean;
@@ -17,18 +20,11 @@ export interface RawCategory {
   show_in_filter: boolean;
 }
 
-export interface FixedCategory {
-  name: string;
-  z_index: number;
-  color: string;
-  ground?: boolean;
+export interface FixedCategory extends BaseCategory {
+  ground_layer?: boolean;
 }
 
-export interface Category {
-  id: number;
-  static_id: number;
-  label: string;
-  z_index: number;
-  color: string;
-  ground_layer: boolean;
+export interface Category extends FixedCategory {
+  id: string;
+  fixed_id: string;
 }
