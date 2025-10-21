@@ -1,5 +1,5 @@
 {
-  "name": "gmm_map",
+  "name": "gmm-atlas",
   "private": true,
   "version": "0.0.1",
   "type": "module",
@@ -23,11 +23,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Tommatheussen/gmm_map.git"
+    "url": "git+https://github.com/Tommatheussen/gmm-atlas.git"
   },
-  "homepage": "https://github.com/Tommatheussen/gmm_map#readme",
+  "homepage": "https://github.com/Tommatheussen/gmm-atlas#readme",
   "bugs": {
-    "url": "https://github.com/Tommatheussen/gmm_map/issues"
+    "url": "https://github.com/Tommatheussen/gmm-atlas/issues"
   },
   "dependencies": {
     "leaflet": "^2.0.0-alpha.1"

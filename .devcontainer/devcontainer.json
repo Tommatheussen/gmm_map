@@ -1,26 +1,26 @@
 {
-  "name": "GMM Map tool",
+  "name": "GMM Atlas",
   "image": "mcr.microsoft.com/devcontainers/typescript-node",
   "postCreateCommand": "npm ci && npm run prepare",
   "customizations": {
     "vscode": {
       "settings": {
-        "editor.formatOnSave": true,
-        "typescript.tsdk": "node_modules/typescript/lib"
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "typescript.format.enable": false,
+        "[typescript]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        }
       },
       "extensions": [
-        "ms-vscode.vscode-typescript-next",
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "dozerg.tsimportsorter",
         "svelte.svelte-vscode",
-        "bradlc.vscode-tailwindcss",
-        "vunguyentuan.vscode-postcss",
         "vunguyentuan.vscode-css-variables",
         "EthanSK.restore-terminals",
-        "antfu.iconify",
-        "heybourn.headwind",
-        "bierner.github-markdown-preview"
+        "bierner.github-markdown-preview",
+        "me-dutour-mathieu.vscode-github-actions"
       ]
     }
   },

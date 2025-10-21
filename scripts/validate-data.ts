@@ -38,7 +38,7 @@ for (const cat of categories) {
 
   if (cat.color !== known.color) {
     console.warn(
-      `🎨 [${latestYear}] Color mismatch for ${cat.name} (${cat.id}): expected ${known.color}, got ${cat.color}`
+      `⚠️ [${latestYear}] Color mismatch for ${cat.name} (${cat.id}): expected ${known.color}, got ${cat.color}`
     );
     hasError = true;
   }
