@@ -3,6 +3,7 @@
   import Select from '$lib/components/Select.svelte';
   import { layerCache } from '$lib/LayerCache';
   import { CATEGORY_LIST } from '$lib/data/Categories';
+  import CategoryItem from './CategoryItem.svelte';
 
   for (const fixedId of Object.keys(categoryVisibilityState)) {
     $effect(() => {
@@ -41,51 +42,59 @@
     </p>
   </fieldset>
 
-  <fieldset>
-    <legend>🔀 Categories</legend>
-    {#each CATEGORY_LIST as category (category.id)}
-      <label>
-        <input type="checkbox" bind:checked={categoryVisibilityState[category.fixed_id]} />
-        {category.name}
-      </label>
-    {/each}
-    <Select bind:value={appState.compareYear} placeholder="Select comparison year" clearOption />
-    <p class="info-text">
-      Optionally select another year to compare with the base year. If no year is selected, only the
-      base year will be visible.
-    </p>
+  <fieldset class="category-toggle">
+    <legend>👁️ Categories</legend>
+
+    <div class="category-list">
+      {#each CATEGORY_LIST as category (category.id)}
+        <CategoryItem {category} />
+      {/each}
+    </div>
   </fieldset>
 </aside>
 
 <style>
   .sidebar {
+    max-height: calc(100vh - var(--header-height) - var(--footer-height));
     padding: 1rem;
     background-color: var(--bg-color);
     border-right: 1px solid #ddd;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+    display: grid;
+    grid-template-rows: auto auto auto;
+    gap: 1rem;
     font-family: sans-serif;
     box-sizing: border-box;
   }
 
   fieldset {
-    border: 1px solid #ddd;
+    border: 1px solid #ccc;
     padding: 0.75rem;
-    margin-bottom: 1rem;
     border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   }
 
   legend {
-    font-weight: bold;
-    font-size: x-large;
+    font-weight: 600;
+    font-size: 1.35rem;
+    padding: 0 0.5rem;
+    color: #333;
   }
 
   .info-text {
     font-size: 0.85rem;
-    color: #555;
-    margin-top: 0.3rem;
+    color: #666;
+    margin-top: 0.5rem;
     font-style: italic;
+  }
+
+  .category-toggle {
+    overflow-y: auto;
+  }
+
+  .category-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
   }
 
   .sidebar-description {
