@@ -13,3 +13,5 @@ export const appState: {
 export const categoryVisibilityState = $state<Record<string, boolean>>(
   Object.fromEntries(Object.keys(CATEGORY_REGISTRY).map((id) => [id, true]))
 );
+
+export const categoryHighlightState = $state<{ highlight: string | null }>({ highlight: null });

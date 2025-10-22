@@ -1,5 +1,9 @@
 <script lang="ts">
-  import { appState, categoryVisibilityState } from '$lib/data/State.svelte';
+  import {
+    appState,
+    categoryVisibilityState,
+    categoryHighlightState
+  } from '$lib/data/State.svelte';
   import Select from '$lib/components/Select.svelte';
   import { layerCache } from '$lib/LayerCache';
   import CategoryList from './CategoryList.svelte';
@@ -12,6 +16,14 @@
       }
     });
   }
+
+  $effect(() => {
+    const highlighted = categoryHighlightState.highlight;
+
+    for (const layer of layerCache.cachedEntries) {
+      layer.handleCategoryBorderChange(highlighted);
+    }
+  });
 </script>
 
 <aside class="sidebar">

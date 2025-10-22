@@ -9,10 +9,12 @@ const BASE_Z_INDEX = 400;
 export class MapYearLayer {
   year: string;
   map: LeafletMap;
-  rootGroup: LayerGroup<LayerGroup<Polygon>>;
+  rootGroup: LayerGroup<FeatureGroup<Polygon>>;
   categories: Category[] = [];
   pois: Poi[] = [];
-  categoryLayers: Map<string, LayerGroup<Polygon>> = new Map();
+  categoryLayers: Map<string, FeatureGroup<Polygon>> = new Map();
+
+  _previousHighlightCategoryId: string | null = null;
 
   constructor(map: LeafletMap, year: string) {
     this.map = map;
@@ -104,19 +106,44 @@ export class MapYearLayer {
     }
   }
 
-  handleCategoryVisibility(category_id: string, visible: boolean): void {
-    const oGr = this.getCategoryGroup(category_id);
+  handleCategoryBorderChange(category_id: string | null): void {
+    if (this._previousHighlightCategoryId && this._previousHighlightCategoryId !== category_id) {
+      const oldHighlight = this.getCategoryGroup(this._previousHighlightCategoryId);
+      if (!oldHighlight) return;
 
-    if (!oGr) return;
+      oldHighlight.setStyle({
+        weight: 1,
+        color: '#333'
+      });
+    }
+
+    if (!category_id) return;
+
+    const group = this.getCategoryGroup(category_id);
+
+    if (!group) return;
+
+    group.setStyle({
+      weight: 1.5,
+      color: '#FFD54F'
+    });
+
+    this._previousHighlightCategoryId = category_id;
+  }
+
+  handleCategoryVisibility(category_id: string, visible: boolean): void {
+    const group = this.getCategoryGroup(category_id);
+
+    if (!group) return;
 
     if (visible) {
-      if (!this.rootGroup.hasLayer(oGr)) this.rootGroup.addLayer(oGr);
+      if (!this.rootGroup.hasLayer(group)) this.rootGroup.addLayer(group);
     } else {
-      if (this.rootGroup.hasLayer(oGr)) this.rootGroup.removeLayer(oGr);
+      if (this.rootGroup.hasLayer(group)) this.rootGroup.removeLayer(group);
     }
   }
 
-  getCategoryGroup(category_id: string): LayerGroup | undefined {
+  getCategoryGroup(category_id: string): FeatureGroup | undefined {
     return this.categoryLayers.get(category_id);
   }
 
