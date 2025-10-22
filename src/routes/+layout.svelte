@@ -5,6 +5,7 @@
   import Footer from '$lib/components/Footer.svelte';
 
   import { appState } from '$lib/data/State.svelte';
+  import WelcomeDialog from '$lib/components/WelcomeDialog.svelte';
 
   async function loadYears(): Promise<Record<string, object>> {
     const res = await fetch('years.json');
@@ -32,11 +33,13 @@
   <meta name="description" content={APP_DESCRIPTION} />
 </svelte:head>
 
-<div class="layout">
+<main class="layout">
   <Header />
   {@render children()}
   <Footer />
-</div>
+</main>
+
+<WelcomeDialog />
 
 <style>
   .layout {

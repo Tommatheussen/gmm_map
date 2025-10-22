@@ -5,3 +5,5 @@ export const APP_DESCRIPTION = 'Explore and compare Graspop Metal Meeting maps a
 export const MAP_CENTER: [number, number] = [51.22793672757168, 5.072650122159495];
 export const MAP_BOUNDS_NORTH_EAST: [number, number] = [51.238107360824905, 5.105676191310109];
 export const MAP_BOUNDS_SOUTH_WEST: [number, number] = [51.21950443463595, 5.05025217528357];
+
+export const INTRO_VERSION = '2025-10-22';
