@@ -21,6 +21,7 @@
   </div>
 
   <div class="footer-right">
+    <!-- svelte-ignore a11y_invalid_attribute -->
     <a href="#" onclick={welcomeDialog.openDialog}>About</a>
     <span class="divider">•</span>
     <a href="https://www.graspop.be" target="_blank" rel="noopener">Graspop</a>

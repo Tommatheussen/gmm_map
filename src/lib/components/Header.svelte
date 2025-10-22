@@ -5,51 +5,64 @@
   const viewText = $derived.by(() => {
     const { baseYear, compareYear } = appState;
 
-    if (compareYear) return `Comparing: ${compareYear} (left) ↔ ${baseYear} (right)`;
+    if (compareYear) return `Comparing: ${compareYear} ↔ ${baseYear}`;
     if (baseYear) return `Viewing: ${baseYear}`;
   });
 </script>
 
 <header class="header">
-  <h2 class="header-left">
-    <strong>{APP_TITLE_FULL}</strong>
-  </h2>
-
-  <div class="header-center">
-    <h4>{viewText}</h4>
+  <div class="header-left">
+    <img alt="GMM Logo" src="gmm.30a838b0.svg" />
+    <div class="titles">
+      <span class="title"> {APP_TITLE_FULL}</span>
+      <span class="subtitle">{APP_DESCRIPTION}</span>
+    </div>
   </div>
 
-  <div class="header-right">
-    <small>{APP_DESCRIPTION}</small>
-  </div>
+  <div class="header-right"><strong>{viewText}</strong></div>
 </header>
 
 <style>
   header {
     height: var(--header-height);
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: auto 1fr;
     align-items: center;
     padding: 0 1rem;
     background: var(--secondary-bg-color);
-    color: #eee;
-    font-size: 0.95rem;
+    color: var(--secondary-text-color);
+    font-size: var(--title-size);
   }
 
   .header-left {
-    font-weight: 600;
-    white-space: nowrap;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: auto 1fr;
   }
 
-  .header-center {
-    text-align: center;
-    color: #ddd;
+  .header-left .titles {
+    display: grid;
+    grid-template-rows: auto auto;
+  }
+
+  .title {
+    font-size: var(--title-size);
+  }
+
+  .subtitle {
+    font-size: var(--info-size);
+    font-style: italic;
+  }
+
+  .header-left img {
+    height: 2rem;
+    margin: auto;
   }
 
   .header-right {
+    vertical-align: middle;
     white-space: nowrap;
-    color: #aaa;
-    font-size: 0.85rem;
+    font-size: var(--label-size);
     text-align: right;
   }
 </style>
