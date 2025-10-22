@@ -9,6 +9,10 @@
     if (seenIntro !== INTRO_VERSION) dialog.showModal();
   });
 
+  export const openDialog = (): void => {
+    dialog.showModal();
+  };
+
   function onDialogClosed() {
     localStorage.setItem('gmm_atlas_intro_seen', INTRO_VERSION);
   }
