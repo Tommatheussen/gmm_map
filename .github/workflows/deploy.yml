@@ -9,6 +9,7 @@ concurrency:
 
 jobs:
   validate-data:
+    permissions:
     uses: ./.github/workflows/data.yml
 
   tag:
