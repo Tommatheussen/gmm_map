@@ -12,7 +12,7 @@
 
 <header class="header">
   <div class="header-left">
-    <img alt="GMM Logo" src="gmm.30a838b0.svg" />
+    <img alt="GMM Logo" src="gmm-logo.svg" />
     <div class="titles">
       <span class="title"> {APP_TITLE_FULL}</span>
       <span class="subtitle">{APP_DESCRIPTION}</span>
