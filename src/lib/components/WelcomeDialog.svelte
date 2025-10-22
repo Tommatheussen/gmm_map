@@ -41,7 +41,7 @@
 <style>
   .intro-dialog {
     border: none;
-    border-radius: 0.9rem;
+    border-radius: var(--border-radius);
     padding: 1.5rem;
     max-width: 500px;
     width: 90%;
@@ -63,14 +63,12 @@
   .intro-title {
     margin: 0;
     font-size: var(--title-size);
-    font-weight: 700;
     color: var(--title-color);
   }
 
   .intro-subtitle {
     margin: 0.25rem 0 0;
     font-size: var(--info-size);
-    font-weight: 400;
     color: var(--info-color);
   }
 
@@ -78,7 +76,7 @@
     list-style: none;
     padding-left: 1.25rem;
     margin: 0.5rem 0 1.25rem;
-    font-size: 0.9rem;
+    font-size: var(--label-size);
     line-height: 1.5;
   }
 
@@ -87,11 +85,12 @@
     background: #4a8ef0;
     border: none;
     color: white;
-    border-radius: 6px;
-    font-weight: 500;
+    border-radius: var(--border-radius);
     cursor: pointer;
+    font-size: var(--label-size);
     transition: background 0.2s ease;
   }
+
   .intro-close:hover {
     background: #3b7add;
   }

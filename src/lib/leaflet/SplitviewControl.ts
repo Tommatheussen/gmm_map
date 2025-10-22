@@ -97,10 +97,10 @@ export class SplitviewControl extends Control {
     div.style.width = '3px';
     div.style.height = `${this._map!.getSize().y}px`;
     div.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-    div.style.borderLeft = '1px solid rgba(0, 0, 0, 0.25)';
-    div.style.borderRight = '1px solid rgba(0, 0, 0, 0.25)';
+    div.style.borderLeft = 'var(--border)';
+    div.style.borderRight = 'var(--border)';
     div.style.cursor = 'ew-resize';
-    div.style.background = '#fff';
+    div.style.background = 'var(--input-bg-color);';
     div.style.zIndex = '1000';
     div.style.marginLeft = '0';
     div.style.marginTop = '0';

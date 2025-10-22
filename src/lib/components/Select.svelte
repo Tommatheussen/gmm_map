@@ -61,11 +61,10 @@
 <style>
   .select {
     position: relative;
-    /* width: 100%; */
-    background: #ffffff;
-    color: #222;
-    border: 1px solid #ccc;
-    border-radius: 0.5rem;
+    background: var(--input-bg-color);
+    color: var(--label-color);
+    border: var(--border);
+    border-radius: var(--border-radius);
     padding: 0.5rem 1rem;
     cursor: pointer;
     display: flex;
@@ -75,15 +74,12 @@
     transition:
       border-color 0.2s,
       box-shadow 0.2s;
+
+    font-size: var(--label-size);
   }
 
   .select:hover {
     border-color: #aaa;
-  }
-
-  .select:focus-within {
-    border-color: #4a90e2;
-    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.25);
   }
 
   .selected {
@@ -91,13 +87,13 @@
   }
 
   .placeholder {
-    color: #999;
+    color: var(--info-color);
   }
 
   .arrow {
     margin-left: 0.5rem;
     pointer-events: none;
-    color: #555;
+    color: var(--label-color);
   }
 
   .dropdown {
@@ -105,9 +101,9 @@
     top: calc(100% + 4px);
     left: 0;
     width: 100%;
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 0.5rem;
+    background: var(--input-bg-color);
+    border: var(--border);
+    border-radius: var(--border-radius);
     max-height: 200px;
     overflow-y: auto;
     z-index: 100;
@@ -133,6 +129,5 @@
   .dropdown li.selected {
     background-color: #e8f0fe;
     color: #1a73e8;
-    font-weight: 600;
   }
 </style>

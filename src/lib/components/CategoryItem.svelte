@@ -20,11 +20,11 @@
     grid-template-columns: auto auto 1fr;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.95rem;
-    color: #222;
-    background: #fff;
+    font-size: var(--label-size);
+    color: var(--label-color);
+    background: var(--input-bg-color);
     padding: 0.4rem 0.6rem;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     cursor: pointer;
     transition:
       background 0.15s ease,

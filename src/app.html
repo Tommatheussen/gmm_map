@@ -1,61 +1,76 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="favicon.png" />
-    %sveltekit.head%
-  </head>
-  <style>
-    :root {
-      --header-height: 60px;
-      --footer-height: 40px;
-      --sidebar-width: 300px;
-      --bg-color: #f9f9f9;
-      --secondary-bg-color: #1b1b1b;
-    }
 
-    html,
-    body {
-      margin: 0;
-      height: 100%;
-      font-family: system-ui, sans-serif;
-      background-color: var(--bg-color);
-    }
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="favicon.png" />
+  %sveltekit.head%
+</head>
+<style>
+  :root {
+    --header-height: 60px;
+    --footer-height: 40px;
+    --sidebar-width: 300px;
+    --bg-color: #f9f9f9;
+    --secondary-bg-color: #1b1b1b;
 
-    .leaflet-splitview-divider::before {
-      content: '';
-      position: absolute;
-      width: 15px;
-      height: 50px;
-      top: calc(50% - 25px);
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 4px;
-      left: -6px;
-    }
+    --title-size: 1.35rem;
+    --title-color: #333;
+    --info-size: 0.8rem;
+    --info-color: #666;
 
-    .leaflet-splitview-divider-badges {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 13px;
-      margin-top: 5px;
-      margin-left: -85px;
-    }
+    --label-size: 0.9rem;
+    --label-color: #111;
 
-    .leaflet-splitview-divider-badge {
-      height: 36px;
-      width: 80px;
-      background-color: rgba(255, 255, 255, 0.95);
-      border: 1px solid black;
-      border-radius: 6px;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  </style>
+    --input-bg-color: #ffffff;
 
-  <body data-sveltekit-preload-data="hover">
-    <div style="display: contents">%sveltekit.body%</div>
-  </body>
+    --border: 1px solid #ccc;
+    --border-radius: 6px;
+  }
+
+  html,
+  body {
+    margin: 0;
+    height: 100%;
+    font-family: system-ui, sans-serif;
+    background-color: var(--bg-color);
+  }
+
+  .leaflet-splitview-divider::before {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 50px;
+    top: calc(50% - 25px);
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: var(--border-radius);
+    left: -6px;
+  }
+
+  .leaflet-splitview-divider-badges {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 13px;
+    margin-top: 5px;
+    margin-left: -85px;
+  }
+
+  .leaflet-splitview-divider-badge {
+    height: 36px;
+    width: 80px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: var(--border);
+    border-radius: var(--border-radius);
+    font-size: var(--title-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+
+<body data-sveltekit-preload-data="hover">
+  <div style="display: contents">%sveltekit.body%</div>
+</body>
+
 </html>

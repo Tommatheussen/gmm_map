@@ -78,7 +78,6 @@
 
 <style>
   .map-container {
-    background-color: #e5e7eb;
     width: 100%;
     height: 100%;
   }

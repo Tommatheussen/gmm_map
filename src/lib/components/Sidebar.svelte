@@ -32,7 +32,6 @@
 
   <fieldset class="category-toggle">
     <legend>👁️ Categories</legend>
-
     <CategoryList />
   </fieldset>
 
@@ -43,8 +42,7 @@
   .sidebar {
     max-height: calc(100vh - var(--header-height) - var(--footer-height));
     padding: 1rem;
-    background-color: var(--bg-color);
-    border-right: 1px solid #ddd;
+    border-right: var(--border);
     display: grid;
     grid-template-rows: auto auto auto 1fr;
     gap: 1rem;
@@ -53,22 +51,21 @@
 
   fieldset {
     min-height: auto;
-    border: 1px solid #ccc;
+    border: var(--border);
     padding: 0.75rem;
-    border-radius: 6px;
+    border-radius: var(--border-radius);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   }
 
   legend {
-    font-weight: 600;
-    font-size: 1.35rem;
+    font-size: var(--title-size);
     padding: 0 0.5rem;
-    color: #333;
+    color: var(--title-color);
   }
 
   .info-text {
-    font-size: 0.85rem;
-    color: #666;
+    font-size: var(--info-size);
+    color: var(--info-color);
     margin-top: 0.5rem;
     font-style: italic;
   }

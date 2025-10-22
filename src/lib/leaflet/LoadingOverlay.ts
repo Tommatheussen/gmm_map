@@ -28,8 +28,6 @@ Map.include({
 			align-items: center;
 			justify-content: center;
 			background: rgba(0, 0, 0, 0.5);
-			color: #FFFFFF;
-			font-size: 1.2rem;
 			z-index: 9999;
 			transition: opacity 300ms ease;
 		`;

@@ -35,7 +35,7 @@
     overflow-y: auto;
     max-height: 100%;
     gap: 0.4rem;
-    padding: 0.05rem;
+    padding: 0.1rem;
   }
 
   .category-list-container {
@@ -47,10 +47,10 @@
 
   .category-search {
     position: relative;
-    background: #ffffff;
-    color: #222;
-    border: 1px solid #ccc;
-    border-radius: 0.5rem;
+    background: var(--input-bg-color);
+    color: var(--label-color);
+    border: var(--border);
+    border-radius: var(--border-radius);
     padding: 0.5rem 1rem;
     cursor: pointer;
     display: flex;
@@ -61,5 +61,9 @@
       border-color 0.2s,
       box-shadow 0.2s;
     margin-bottom: 0.5rem;
+  }
+
+  .category-search:hover {
+    border-color: #aaa;
   }
 </style>
