@@ -2,12 +2,11 @@
   import { appState, categoryVisibilityState } from '$lib/data/State.svelte';
   import Select from '$lib/components/Select.svelte';
   import { layerCache } from '$lib/LayerCache';
-  import { CATEGORY_LIST } from '$lib/data/Categories';
-  import CategoryItem from './CategoryItem.svelte';
+  import CategoryList from './CategoryList.svelte';
 
   for (const fixedId of Object.keys(categoryVisibilityState)) {
     $effect(() => {
-      const visible = categoryVisibilityState[fixedId]; // reactive read
+      const visible = categoryVisibilityState[fixedId];
       for (const layer of layerCache.cachedEntries) {
         layer.handleCategoryVisibility(fixedId, visible);
       }
@@ -45,12 +44,10 @@
   <fieldset class="category-toggle">
     <legend>👁️ Categories</legend>
 
-    <div class="category-list">
-      {#each CATEGORY_LIST as category (category.id)}
-        <CategoryItem {category} />
-      {/each}
-    </div>
+    <CategoryList />
   </fieldset>
+
+  <div></div>
 </aside>
 
 <style>
@@ -60,13 +57,14 @@
     background-color: var(--bg-color);
     border-right: 1px solid #ddd;
     display: grid;
-    grid-template-rows: auto auto auto;
+    grid-template-rows: auto auto auto 1fr;
     gap: 1rem;
     font-family: sans-serif;
     box-sizing: border-box;
   }
 
   fieldset {
+    min-height: auto;
     border: 1px solid #ccc;
     padding: 0.75rem;
     border-radius: 6px;
@@ -88,13 +86,7 @@
   }
 
   .category-toggle {
-    overflow-y: auto;
-  }
-
-  .category-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
+    overflow-y: hidden;
   }
 
   .sidebar-description {
