@@ -1,4 +1,4 @@
-import '$lib/leaflet/SplitViewControl.css';
+import '$lib/leaflet/SplitviewControl.css';
 
 import type { MapYearLayer } from '$lib/leaflet/MapYearLayer';
 import { Control, DomEvent, DomUtil, Map } from 'leaflet';
