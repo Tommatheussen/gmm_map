@@ -5,7 +5,7 @@
     categoryHighlightState
   } from '$lib/data/State.svelte';
   import Select from '$lib/components/Select.svelte';
-  import { layerCache } from '$lib/LayerCache';
+  import { layerCache } from '$lib/data/LayerCache';
   import CategoryList from './CategoryList.svelte';
 
   for (const fixedId of Object.keys(categoryVisibilityState)) {

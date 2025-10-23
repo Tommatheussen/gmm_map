@@ -4,7 +4,7 @@
   import '$lib/leaflet/LoadingOverlay';
   import { MapYearLayer } from '$lib/leaflet/MapYearLayer';
   import { SplitviewControl } from '$lib/leaflet/SplitviewControl';
-  import { layerCache } from '$lib/LayerCache';
+  import { layerCache } from '$lib/data/LayerCache';
   import { MAP_BOUNDS_NORTH_EAST, MAP_BOUNDS_SOUTH_WEST, MAP_CENTER } from '$lib/Config';
   import { appState } from '$lib/data/State.svelte';
 
