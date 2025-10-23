@@ -1,8 +1,12 @@
+import '$lib/leaflet/MapYearLayer.css';
+
 import { dataCache } from '$lib/data/DataCache';
-import { categoryVisibilityState } from '$lib/data/State.svelte';
 import type { Category } from '$lib/interfaces/Category';
-import type { Poi, PoiTag } from '$lib/interfaces/Poi';
+
 import { FeatureGroup, LayerGroup, type Map as LeafletMap, Polygon } from 'leaflet';
+
+import { categoryVisibilityState } from '$lib/data/State.svelte';
+import type { Poi, PoiTag } from '$lib/interfaces/Poi';
 
 const BASE_Z_INDEX = 400;
 

@@ -30,33 +30,17 @@
   justify-content: center;
 }
 
-.leaflet-pane path {
-  transition-property: stroke, stroke-width;
-  transition-duration: 500ms;
-  transition-timing-function: ease-in;
-}
-
-.popup-title {
-  margin: 0;
-}
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  max-width: fit-content;
-  width: max-content;
-  gap: 4px;
-}
-
-.popup-tag {
-  max-width: max-content;
-  border-radius: 6px;
-  padding: 6px;
-  background-color: lightskyblue;
-}
-
-.popup-content {
-  gap: 8px;
-  display: flex;
-  flex-direction: column;
+.leaflet-splitview-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-left: var(--border);
+  border-right: var(--border);
+  cursor: ew-resize;
+  background: var(--input-bg-color);
+  z-index: 1000;
+  margin-left: 0 !important;
+  margin-top: 0 !important;
 }

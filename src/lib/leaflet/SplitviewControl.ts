@@ -1,6 +1,7 @@
-import { Control, DomEvent, DomUtil, Map } from 'leaflet';
+import '$lib/leaflet/SplitViewControl.css';
 
 import type { MapYearLayer } from '$lib/leaflet/MapYearLayer';
+import { Control, DomEvent, DomUtil, Map } from 'leaflet';
 
 export class SplitviewControl extends Control {
   private _map!: Map;
@@ -91,19 +92,7 @@ export class SplitviewControl extends Control {
     this._rightBadge = DomUtil.create('div', 'leaflet-splitview-divider-badge right', badges);
     this._setRightBadgeContent();
 
-    div.style.position = 'absolute';
-    div.style.top = '0';
-    div.style.bottom = '0';
-    div.style.width = '3px';
     div.style.height = `${this._map!.getSize().y}px`;
-    div.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
-    div.style.borderLeft = 'var(--border)';
-    div.style.borderRight = 'var(--border)';
-    div.style.cursor = 'ew-resize';
-    div.style.background = 'var(--input-bg-color);';
-    div.style.zIndex = '1000';
-    div.style.marginLeft = '0';
-    div.style.marginTop = '0';
 
     this._divider = div;
     this._updateDivider();
