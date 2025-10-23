@@ -1,7 +1,7 @@
 import { dataCache } from '$lib/data/DataCache';
 import { categoryVisibilityState } from '$lib/data/State.svelte';
 import type { Category } from '$lib/interfaces/Category';
-import type { Poi } from '$lib/interfaces/Poi';
+import type { Poi, PoiTag } from '$lib/interfaces/Poi';
 import { FeatureGroup, LayerGroup, type Map as LeafletMap, Polygon } from 'leaflet';
 
 const BASE_Z_INDEX = 400;
@@ -89,6 +89,19 @@ export class MapYearLayer {
         continue;
       }
 
+      let popupData = `
+          <div class="popup-content">
+        <h4 class="popup-title">
+          ${cat.name.trim() == poi.name.trim() ? poi.name : cat.name + ' - ' + poi.name}
+        </h4>
+        `;
+
+      if (poi.tags && poi.tags.length > 0) {
+        popupData += this._createTags(poi.tags);
+      }
+
+      popupData += '</div>';
+
       if (poi.type === 'polygon') {
         const latlngs = poi.coordinates.map((c) => [c.lat, c.lng] as [number, number]);
         const polygon = new Polygon(latlngs, {
@@ -98,7 +111,7 @@ export class MapYearLayer {
           weight: 1,
           pane: `year-${this.year}-cat-${cat.id}`
         });
-        polygon.bindPopup(`<strong>${poi.name}</strong>`);
+        polygon.bindPopup(popupData);
         group.addLayer(polygon);
       } else {
         console.warn(`POI type not implemented! ${poi.name} (${poi.id})`);
@@ -149,5 +162,16 @@ export class MapYearLayer {
 
   remove() {
     this.rootGroup.removeFrom(this.map);
+  }
+
+  private _createTags(tags: PoiTag[]) {
+    let content = `<div class="tags">`;
+
+    tags.forEach((tag) => {
+      content += `<span class="popup-tag">${tag.name}</span>`;
+    });
+
+    content += `</div>`;
+    return content;
   }
 }

@@ -1,0 +1,62 @@
+.leaflet-splitview-divider::before {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 50px;
+  top: calc(50% - 25px);
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: var(--border-radius);
+  left: -6px;
+}
+
+.leaflet-splitview-divider-badges {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+  margin-top: 5px;
+  margin-left: -85px;
+  user-select: none;
+}
+
+.leaflet-splitview-divider-badge {
+  height: 36px;
+  width: 80px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border: var(--border);
+  border-radius: var(--border-radius);
+  font-size: var(--title-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.leaflet-pane path {
+  transition-property: stroke, stroke-width;
+  transition-duration: 500ms;
+  transition-timing-function: ease-in;
+}
+
+.popup-title {
+  margin: 0;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: fit-content;
+  width: max-content;
+  gap: 4px;
+}
+
+.popup-tag {
+  max-width: max-content;
+  border-radius: 6px;
+  padding: 6px;
+  background-color: lightskyblue;
+}
+
+.popup-content {
+  gap: 8px;
+  display: flex;
+  flex-direction: column;
+}
