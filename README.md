@@ -89,6 +89,5 @@ Festival data © Graspop Metal Meeting — used for educational and fan purposes
 
 ## 🏗️ Roadmap / Ideas
 
-- [ ] Improved POI info popups
-- [ ] Category-based filtering and search
-- [ ] Dark/light theme toggle
+- [ ] Add grouped categories (not from source data though)
+- [ ] Responsive, mobile layout?
