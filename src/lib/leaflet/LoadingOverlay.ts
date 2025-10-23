@@ -1,14 +1,12 @@
-import { DomUtil, Map } from 'leaflet';
+import '$lib/leaflet/LoadingOverlay.css';
 
-interface LoadingOverlayInstance {
-  el: HTMLDivElement;
-}
+import { DomUtil, Map } from 'leaflet';
 
 declare module 'leaflet' {
   interface Map {
-    _loadingOverlay?: LoadingOverlayInstance;
+    _loadingOverlay?: HTMLDivElement;
     _activeLoads?: number;
-    _createLoadingOverlay(): LoadingOverlayInstance;
+    _createLoadingOverlay(): void;
     markLayerLoading(): void;
     markLayerDone(): void;
     showLoadingOverlay(): void;
@@ -21,40 +19,9 @@ Map.include({
     if (this._loadingOverlay) return this._loadingOverlay;
 
     const overlay = DomUtil.create('div', 'leaflet-loading-overlay', this.getContainer());
-    overlay.style.cssText = `
-			position: absolute;
-      inset: 0;
-			display: none;
-			align-items: center;
-			justify-content: center;
-			background: rgba(0, 0, 0, 0.5);
-			z-index: 9999;
-			transition: opacity 300ms ease;
-		`;
 
-    const spinner = DomUtil.create('div', 'leaflet-loading-spinner', overlay);
-    spinner.style.cssText = `
-			border: 4px solid rgba(255,255,255,0.3);
-			border-top-color: #FFFFFF;
-			border-radius: 50%;
-			width: 40px;
-			height: 40px;
-			animation: spin 1s linear infinite;
-			margin-right: 10px;
-		`;
-
-    // Inject keyframes once
-    if (!document.querySelector('style[data-leaflet-overlay-style]')) {
-      const style = document.createElement('style');
-      style.dataset.leafletOverlayStyle = 'true';
-      style.textContent = `
-				@keyframes spin { from {transform:rotate(0)} to {transform:rotate(360deg)} }
-			`;
-      document.head.appendChild(style);
-    }
-
-    this._loadingOverlay = { el: overlay };
-    return this._loadingOverlay;
+    DomUtil.create('div', 'leaflet-loading-spinner', overlay);
+    this._loadingOverlay = overlay;
   },
 
   markLayerLoading(this: L.Map) {
@@ -69,19 +36,20 @@ Map.include({
   },
 
   showLoadingOverlay(this: L.Map) {
-    const overlay = this._loadingOverlay?.el;
+    const overlay = this._loadingOverlay;
     if (!overlay) return;
+
     overlay.style.display = 'flex';
     overlay.style.opacity = '0';
     requestAnimationFrame(() => (overlay.style.opacity = '1'));
   },
 
   hideLoadingOverlay(this: L.Map) {
-    const inst = this._loadingOverlay;
-    if (!inst) return;
-    inst.el.style.opacity = '0';
+    const overlay = this._loadingOverlay;
+    if (!overlay) return;
+    overlay.style.opacity = '0';
     setTimeout(() => {
-      if ((this._activeLoads || 0) === 0) inst.el.style.display = 'none';
+      if ((this._activeLoads || 0) === 0) overlay.style.display = 'none';
     }, 300);
   }
 });
