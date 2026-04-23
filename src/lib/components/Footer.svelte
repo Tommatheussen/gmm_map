@@ -68,7 +68,7 @@
   }
 
   .divider {
-    color: var(label-color);
+    color: var(--label-color);
     user-select: none;
   }
 </style>

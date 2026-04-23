@@ -24,18 +24,18 @@ Map.include({
     this._loadingOverlay = overlay;
   },
 
-  markLayerLoading(this: L.Map) {
+  markLayerLoading(this: Map) {
     this._activeLoads = (this._activeLoads || 0) + 1;
     if (this._activeLoads === 1) this.showLoadingOverlay();
   },
 
-  markLayerDone(this: L.Map) {
+  markLayerDone(this: Map) {
     if (!this._activeLoads) return;
     this._activeLoads = Math.max(0, this._activeLoads - 1);
     if (this._activeLoads === 0) this.hideLoadingOverlay();
   },
 
-  showLoadingOverlay(this: L.Map) {
+  showLoadingOverlay(this: Map) {
     const overlay = this._loadingOverlay;
     if (!overlay) return;
 
@@ -44,7 +44,7 @@ Map.include({
     requestAnimationFrame(() => (overlay.style.opacity = '1'));
   },
 
-  hideLoadingOverlay(this: L.Map) {
+  hideLoadingOverlay(this: Map) {
     const overlay = this._loadingOverlay;
     if (!overlay) return;
     overlay.style.opacity = '0';
