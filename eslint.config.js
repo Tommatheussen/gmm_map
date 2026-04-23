@@ -28,6 +28,12 @@ export default defineConfig(
     }
   },
   {
+    files: ['types/leaflet/index.d.ts'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off'
+    }
+  },
+  {
     files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
     languageOptions: {
       parserOptions: {
