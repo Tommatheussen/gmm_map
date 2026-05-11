@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   schedule:
     # May 1-24: hourly.
-    - cron: '15 * 1-24 5 *'
+    - cron: '29 * * * *'
     # May 25 through the end of June: every 15 minutes.
-    - cron: '*/15 * 25-31 5 *'
-    - cron: '*/15 * * 6 *'
+    # - cron: '*/15 * 25-31 5 *'
+    # - cron: '*/15 * * 6 *'
 
 permissions:
   contents: read
