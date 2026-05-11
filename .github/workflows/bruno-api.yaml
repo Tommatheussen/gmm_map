@@ -1,0 +1,44 @@
+name: Bruno API Calls
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bruno-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Install Bruno CLI
+        run: npm install -g @usebruno/cli
+
+      - name: Prepare report directory
+        run: mkdir -p reports
+
+      - name: Run Bruno demo collection
+        working-directory: bruno
+        run: |
+          bru run \
+            --workspace-path .. \
+            --env-var platform_name="GitHub Actions" \
+            --env-var base_url=${{ secrets.BASE_URL }} \
+            --env-var api_key=${{ secrets.API_KEY }} \
+            --reporter-html ../reports/github-actions-report.html
+
+      - name: Upload Bruno report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: bruno-report
+          path: reports/github-actions-report.html
+          if-no-files-found: error
