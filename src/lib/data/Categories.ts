@@ -50,9 +50,23 @@ export const CATEGORY_REGISTRY: Readonly<Record<number, FixedCategory>> = Object
 });
 
 export const CATEGORY_LIST = Object.freeze(
-  Object.entries(CATEGORY_REGISTRY).map<Category>(([fixed_id, data]) => ({
-    id: fixed_id,
-    fixed_id: fixed_id,
-    ...data
-  }))
+  Object.entries(CATEGORY_REGISTRY)
+    .filter(([, data]) => !data.ground_layer)
+    .map<Category>(([fixed_id, data]) => ({
+      layer_id: fixed_id,
+      fixed_id: fixed_id,
+      ...data
+    }))
+    .sort((a, b) => b.z_index - a.z_index)
+);
+
+export const CATEGORY_GROUND_LAYER_LIST = Object.freeze(
+  Object.entries(CATEGORY_REGISTRY)
+    .filter(([, data]) => data.ground_layer)
+    .map<Category>(([fixed_id, data]) => ({
+      layer_id: fixed_id,
+      fixed_id: fixed_id,
+      ...data
+    }))
+    .sort((a, b) => b.z_index - a.z_index)
 );
