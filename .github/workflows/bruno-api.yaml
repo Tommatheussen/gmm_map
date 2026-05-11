@@ -1,0 +1,54 @@
+name: Bruno API Calls
+
+on:
+  workflow_dispatch:
+  schedule:
+    # May 1-24: hourly.
+    - cron: '15 * 1-24 5 *'
+    # May 25 through the end of June: every 15 minutes.
+    - cron: '*/15 * 25-31 5 *'
+    - cron: '*/15 * * 6 *'
+
+permissions:
+  contents: read
+
+jobs:
+  bruno-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Install Bruno CLI
+        run: npm install -g @usebruno/cli
+
+      - name: Prepare report directory
+        run: mkdir -p reports
+
+      - name: Run Bruno demo collection
+        working-directory: ./bruno
+        run: |
+          bru run \
+            --env-var "base_url=${{ secrets.BASE_URL }}" \
+            --env-var "api_key=${{ secrets.API_KEY }}" \
+            --env-var "maps_modified=${{ vars.MAPS_MODIFIED }}" \
+            --env-var "maps_categories_amount=${{ vars.MAPS_CATEGORIES_AMOUNT }}" \
+            --env-var "maps_categories_modified=${{ vars.MAPS_CATEGORIES_MODIFIED }}" \
+            --env-var "pois_amount=${{ vars.POIS_AMOUNT }}" \
+            --env-var "pois_modified=${{ vars.POIS_MODIFIED }}" \
+            --env-var "pois_deleted=${{ vars.POIS_DELETED }}" \
+            --reporter-html ../reports/github-actions-report.html
+
+      - name: Upload Bruno report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: bruno-report
+          path: reports/github-actions-report.html
+          if-no-files-found: error

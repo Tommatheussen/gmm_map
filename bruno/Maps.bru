@@ -1,0 +1,42 @@
+meta {
+  name: Maps
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/maps
+  body: json
+  auth: inherit
+}
+
+tests {
+  const body = res.getBody();
+  const data = body.data[0];
+
+  test("res.status should be 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("last modified_at is the same", function() {
+    const previous = bru.getEnvVar("maps_modified");
+
+    const newest = new Date(data.modified_at)
+
+    expect(newest.toISOString()).to.equal(previous);
+  });
+
+  test("amount of categories is the same", function() {
+    const previous = Number(bru.getEnvVar("maps_categories_amount"));
+
+    expect(data.categories.length).to.equal(previous);
+  });
+
+  test("last_modified of categories is the same", function() {
+    const previous = bru.getEnvVar("maps_categories_modified");
+
+    const newest = new Date(Math.max(...data.categories.filter(e => e.modified_at).map(e => new Date(e.modified_at))))
+
+    expect(newest.toISOString()).to.equal(previous);
+  });
+}
