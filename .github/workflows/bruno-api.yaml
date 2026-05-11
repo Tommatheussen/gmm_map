@@ -25,36 +25,13 @@ jobs:
       - name: Prepare report directory
         run: mkdir -p reports
 
-      - name: Validate Bruno base URL
-        env:
-          BASE_URL: ${{ vars.BASE_URL }}
-        run: |
-          node <<'NODE'
-          const raw = process.env.BASE_URL || "";
-          if (!raw) {
-            throw new Error("BASE_URL secret is empty or not available to this workflow");
-          }
-          if (raw !== raw.trim()) {
-            throw new Error("BASE_URL secret has leading or trailing whitespace");
-          }
-          if (/[\r\n]/.test(raw)) {
-            throw new Error("BASE_URL secret contains a line break");
-          }
-          if (/^["']|["']$/.test(raw)) {
-            throw new Error("BASE_URL secret appears to include quote characters");
-          }
-
-          const target = new URL(`${raw}/maps`);
-          console.log(`Bruno target URL: ${target.origin}${target.pathname}`);
-          NODE
-
       - name: Run Bruno demo collection
         working-directory: ./bruno
         run: |
           bru run \
-            --env-var "platform_name=GitHub Actions" \
-            --env-var "base_url=${{ vars.BASE_URL }}" \
-            --env-var "api_key=${{ secrets.API_KEY }}" \
+            --env-var platform_name=GitHub Actions \
+            --env-var base_url=${{ vars.BASE_URL }} \
+            --env-var api_key=${{ secrets.API_KEY }} \
             --reporter-html ../reports/github-actions-report.html
 
       - name: Upload Bruno report
