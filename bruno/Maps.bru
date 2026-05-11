@@ -19,7 +19,7 @@ tests {
   });
 
   test("last modified_at is the same", function() {
-    const previous = bru.getVar("maps_modified");
+    const previous = bru.getEnvVar("maps_modified");
 
     const newest = new Date(data.modified_at)
 
@@ -27,13 +27,13 @@ tests {
   });
 
   test("amount of categories is the same", function() {
-    const previous = Number(bru.getVar("maps_categories_amount"));
+    const previous = Number(bru.getEnvVar("maps_categories_amount"));
 
     expect(data.categories.length).to.equal(previous);
   });
 
   test("last_modified of categories is the same", function() {
-    const previous = bru.getVar("maps_categories_modified");
+    const previous = bru.getEnvVar("maps_categories_modified");
 
     const newest = new Date(Math.max(...data.categories.filter(e => e.modified_at).map(e => new Date(e.modified_at))))
 
