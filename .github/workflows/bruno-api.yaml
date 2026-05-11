@@ -2,6 +2,12 @@ name: Bruno API Calls
 
 on:
   workflow_dispatch:
+  schedule:
+    # May 1-24: hourly.
+    - cron: '15 * 1-24 5 *'
+    # May 25 through the end of June: every 15 minutes.
+    - cron: '*/15 * 25-31 5 *'
+    - cron: '*/15 * * 6 *'
 
 permissions:
   contents: read
@@ -31,6 +37,9 @@ jobs:
           bru run \
             --env-var base_url=${{ secrets.BASE_URL }} \
             --env-var api_key=${{ secrets.API_KEY }} \
+            --env-var "maps_modified=${{ vars.MAPS_MODIFIED }}" \
+            --env-var "maps_categories_amount=${{ vars.MAPS_CATEGORIES_AMOUNT }}" \
+            --env-var "maps_categories_modified=${{ vars.MAPS_CATEGORIES_MODIFIED }}" \
             --reporter-html ../reports/github-actions-report.html
 
       - name: Upload Bruno report

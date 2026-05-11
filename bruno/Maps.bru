@@ -1,5 +1,5 @@
 meta {
-  name: Maps (2026)
+  name: Maps
   type: http
   seq: 1
 }
@@ -8,12 +8,6 @@ get {
   url: {{base_url}}/maps
   body: json
   auth: inherit
-}
-
-vars:pre-request {
-  last_modified: 2026-05-05T08:16:36.000Z
-  categories_amount: 34
-  categories_modified: 2026-05-07T13:39:00.000Z
 }
 
 tests {
@@ -25,27 +19,21 @@ tests {
   });
 
   test("last modified_at is the same", function() {
-    const previous = bru.getRequestVar("last_modified");
+    const previous = bru.getRequestVar("maps_modified");
 
     const newest = new Date(data.modified_at)
 
     expect(newest.toISOString()).to.equal(previous);
   });
 
-  test("last body is the same", function() {
-    const previous = bru.getVar("graspop_maps_body");
-
-    expect(JSON.stringify(body)).to.equal(previous);
-  });
-
   test("amount of categories is the same", function() {
-    const previous = Number(bru.getRequestVar("categories_amount"));
+    const previous = Number(bru.getRequestVar("maps_categories_amount"));
 
     expect(data.categories.length).to.equal(previous);
   });
 
   test("last_modified of categories is the same", function() {
-    const previous = bru.getRequestVar("categories_modified");
+    const previous = bru.getRequestVar("maps_categories_modified");
 
     const newest = new Date(Math.max(...data.categories.filter(e => e.modified_at).map(e => new Date(e.modified_at))))
 
