@@ -12,7 +12,17 @@ get {
 
 tests {
   const body = res.getBody();
-  const data = body.data;
+  const data = body.data || [];
+
+  const expectedDate = (name) => {
+    const value = String(bru.getEnvVar(name) || "").trim();
+
+    if (!value || value.toLowerCase() === "null") {
+      return null;
+    }
+
+    return new Date(value).toISOString();
+  };
 
   const newestDate = (items, field) => {
     const dates = items
@@ -33,13 +43,13 @@ tests {
   });
 
   test("last modified_at is the same", function() {
-    const previous = bru.getEnvVar("pois_modified");
+    const previous = expectedDate("pois_modified");
 
     expect(newestDate(data, "modified_at")).to.equal(previous);
   });
 
   test("last deleted_at is the same", function() {
-    const previous = bru.getEnvVar("pois_deleted");
+    const previous = expectedDate("pois_deleted");
 
     expect(newestDate(data, "deleted_at")).to.equal(previous);
   });
