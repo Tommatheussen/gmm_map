@@ -35,11 +35,14 @@ jobs:
         working-directory: ./bruno
         run: |
           bru run \
-            --env-var base_url=${{ secrets.BASE_URL }} \
-            --env-var api_key=${{ secrets.API_KEY }} \
+            --env-var "base_url=${{ secrets.BASE_URL }}" \
+            --env-var "api_key=${{ secrets.API_KEY }}" \
             --env-var "maps_modified=${{ vars.MAPS_MODIFIED }}" \
             --env-var "maps_categories_amount=${{ vars.MAPS_CATEGORIES_AMOUNT }}" \
             --env-var "maps_categories_modified=${{ vars.MAPS_CATEGORIES_MODIFIED }}" \
+            --env-var "pois_amount=${{ vars.POIS_AMOUNT }}" \
+            --env-var "pois_modified=${{ vars.POIS_MODIFIED }}" \
+            --env-var "pois_deleted=${{ vars.POIS_DELETED }}" \
             --reporter-html ../reports/github-actions-report.html
 
       - name: Upload Bruno report

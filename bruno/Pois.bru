@@ -1,0 +1,46 @@
+meta {
+  name: Pois
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/pois
+  body: json
+  auth: inherit
+}
+
+tests {
+  const body = res.getBody();
+  const data = body.data;
+
+  const newestDate = (items, field) => {
+    const dates = items
+      .filter((item) => item[field])
+      .map((item) => new Date(item[field]).getTime());
+
+    return dates.length ? new Date(Math.max(...dates)).toISOString() : null;
+  };
+
+  test("res.status should be 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("_meta count is the same", function() {
+    const previous = Number(bru.getEnvVar("pois_amount"));
+
+    expect(body._meta.total_count).to.equal(previous);
+  });
+
+  test("last modified_at is the same", function() {
+    const previous = bru.getEnvVar("pois_modified");
+
+    expect(newestDate(data, "modified_at")).to.equal(previous);
+  });
+
+  test("last deleted_at is the same", function() {
+    const previous = bru.getEnvVar("pois_deleted");
+
+    expect(newestDate(data, "deleted_at")).to.equal(previous);
+  });
+}
