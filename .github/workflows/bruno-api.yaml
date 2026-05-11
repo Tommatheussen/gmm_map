@@ -26,10 +26,9 @@ jobs:
         run: mkdir -p reports
 
       - name: Run Bruno demo collection
-        working-directory: bruno
+        working-directory: ./bruno
         run: |
           bru run \
-            --workspace-path .. \
             --env-var platform_name="GitHub Actions" \
             --env-var base_url=${{ secrets.BASE_URL }} \
             --env-var api_key=${{ secrets.API_KEY }} \
