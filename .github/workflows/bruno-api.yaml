@@ -29,7 +29,7 @@ jobs:
         working-directory: ./bruno
         run: |
           bru run \
-            --env-var base_url=${{ vars.BASE_URL }} \
+            --env-var base_url=${{ secrets.BASE_URL }} \
             --env-var api_key=${{ secrets.API_KEY }} \
             --reporter-html ../reports/github-actions-report.html
 
