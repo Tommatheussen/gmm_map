@@ -25,7 +25,7 @@
   />
 
   <div class="category-list">
-    {#each filteredCategories as category (category.id)}
+    {#each filteredCategories as category (category.category_id)}
       <CategoryItem {category} />
     {/each}
 
