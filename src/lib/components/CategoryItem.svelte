@@ -16,7 +16,7 @@
     hoverTimeout = setTimeout(() => {
       categoryHighlightState.highlight = category.category_id;
       hoverTimeout = null;
-    }, 150);
+    }, 500);
   }
 
   function handleMouseLeave() {

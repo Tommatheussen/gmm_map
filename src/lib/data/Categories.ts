@@ -44,7 +44,9 @@ export const CATEGORY_REGISTRY: Readonly<Record<string, CategoryDefinition>> = O
   foodcorner: { color: '#D0D5E5', fixed_id: 41, name: 'Foodcorner', z_index: 10 },
   tribune: { aliases: ['Tent Tribune'], color: '#7D767E', fixed_id: 42, name: 'Tribune', z_index: 9 },
   crosses: { color: '#000000', fixed_id: 43, name: 'Crosses', z_index: 11 },
-  light_green_camping_grounds: { aliases: ['Light Green Ground'], color: '#CADC8C', fixed_id: 44, ground_layer: true, name: 'Light Green Camping Grounds', z_index: 0 }
+  light_green_camping_grounds: { aliases: ['Light Green Ground'], color: '#CADC8C', fixed_id: 44, ground_layer: true, name: 'Light Green Camping Grounds', z_index: 0 },
+  festitent: { color: '#37A85E', name: 'Festitent', z_index: 3 },
+  festihut: { color: '#9AACAB', name: 'Festihut', z_index: 8 }
 });
 
 export type CategoryId = keyof typeof CATEGORY_REGISTRY;
