@@ -4,7 +4,14 @@
 
   let searchQuery = $state('');
   let filteredCategories = $derived(
-    CATEGORY_LIST.filter((cat) => cat.name.toLowerCase().includes(searchQuery.trim().toLowerCase()))
+    CATEGORY_LIST.filter((cat) => {
+      const query = searchQuery.trim().toLowerCase();
+      if (!query) return true;
+
+      return [cat.name, ...(cat.aliases ?? [])].some((value) =>
+        value.toLowerCase().includes(query)
+      );
+    })
   );
 </script>
 
