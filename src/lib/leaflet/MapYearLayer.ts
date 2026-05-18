@@ -59,11 +59,13 @@ export class MapYearLayer {
     for (const cat of this.categories) {
       this._ensureMapPaneExists(cat);
 
-      const group = new FeatureGroup<Polygon>();
-      this.categoryLayers.set(cat.category_id, group);
+      if (!this.categoryLayers.has(cat.category_id)) {
+        const group = new FeatureGroup<Polygon>();
+        this.categoryLayers.set(cat.category_id, group);
 
-      if (categoryVisibilityState[cat.category_id] !== false) {
-        this.rootGroup.addLayer(group);
+        if (categoryVisibilityState[cat.category_id] !== false) {
+          this.rootGroup.addLayer(group);
+        }
       }
     }
 

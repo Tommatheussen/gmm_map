@@ -44,9 +44,7 @@ export const CATEGORY_REGISTRY: Readonly<Record<string, CategoryDefinition>> = O
   foodcorner: { color: '#D0D5E5', fixed_id: 41, name: 'Foodcorner', z_index: 10 },
   tribune: { aliases: ['Tent Tribune'], color: '#7D767E', fixed_id: 42, name: 'Tribune', z_index: 9 },
   crosses: { color: '#000000', fixed_id: 43, name: 'Crosses', z_index: 11 },
-  light_green_camping_grounds: { aliases: ['Light Green Ground'], color: '#CADC8C', fixed_id: 44, ground_layer: true, name: 'Light Green Camping Grounds', z_index: 0 },
-  festitent: { color: '#37A85E', name: 'Festitent', z_index: 3 },
-  festihut: { color: '#9AACAB', name: 'Festihut', z_index: 8 }
+  light_green_camping_grounds: { aliases: ['Light Green Ground'], color: '#CADC8C', fixed_id: 44, ground_layer: true, name: 'Light Green Camping Grounds', z_index: 0 }
 });
 
 export type CategoryId = keyof typeof CATEGORY_REGISTRY;
@@ -65,8 +63,8 @@ export const CATEGORY_LAYER_MAPPINGS: Readonly<Record<string, Record<number, Cat
   // Sparse historical overrides for fixed IDs that were reused with a different meaning.
   2022: { 2503: 'first_aid' },
   2023: { 6169: 'first_aid' },
-  2024: { 10560: 'festihut' },
-  2025: { 15487: 'festitent', 15492: 'festihut' },
+  2024: { 10560: 'camping_grounds' },
+  2025: { 15487: 'camping_grounds', 15492: 'camping_grounds' },
   // Temporary raw layer ID mapping until 2026 fixed_id values are available.
   2026: {
     252: 'food',
@@ -100,9 +98,14 @@ export const CATEGORY_LAYER_MAPPINGS: Readonly<Record<string, Record<number, Cat
     280: 'kiss_and_ride',
     281: 'merchandise',
     282: 'recycle_points',
-    283: 'security',
+    283: 'lockers',
     284: 'wifi_zone',
-    285: 'general'
+    285: 'general',
+    414: 'camping_grounds',
+    415: 'camping_grounds',
+    416: 'lockers',
+    417: 'camping_grounds',
+    418: 'camping_grounds'
   }
 });
 
