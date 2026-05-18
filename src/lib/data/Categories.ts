@@ -1,4 +1,4 @@
-import { type Category, type CategoryDefinition } from '$lib/interfaces/Category';
+import { type Category, type CategoryDefinition, type RawCategory } from '$lib/interfaces/Category';
 
 export const CATEGORY_REGISTRY: Readonly<Record<string, CategoryDefinition>> = Object.freeze<Record<CategoryId, CategoryDefinition>>({
   food: { color: '#D7B456', fixed_id: 1, name: 'Food', z_index: 43 },
@@ -45,9 +45,6 @@ export const CATEGORY_REGISTRY: Readonly<Record<string, CategoryDefinition>> = O
   tribune: { aliases: ['Tent Tribune'], color: '#7D767E', fixed_id: 42, name: 'Tribune', z_index: 9 },
   crosses: { color: '#000000', fixed_id: 43, name: 'Crosses', z_index: 11 },
   light_green_camping_grounds: { aliases: ['Light Green Ground'], color: '#CADC8C', fixed_id: 44, ground_layer: true, name: 'Light Green Camping Grounds', z_index: 0 }
-  // security: { color: '#C94959', name: 'Security', z_index: 100 },
-  // festitent: { color: '#37A85E', name: 'Festitent', z_index: 3 },
-  // festihut: { color: '#9AACAB', name: 'Festihut', z_index: 8 }
 });
 
 export type CategoryId = keyof typeof CATEGORY_REGISTRY;
@@ -66,8 +63,8 @@ export const CATEGORY_LAYER_MAPPINGS: Readonly<Record<string, Record<number, Cat
   // Sparse historical overrides for fixed IDs that were reused with a different meaning.
   2022: { 2503: 'first_aid' },
   2023: { 6169: 'first_aid' },
-  // 2024: { 10560: 'festihut' },
-  // 2025: { 15487: 'festitent', 15492: 'festihut' },
+  2024: { 10560: 'festihut' },
+  2025: { 15487: 'festitent', 15492: 'festihut' },
   // Temporary raw layer ID mapping until 2026 fixed_id values are available.
   2026: {
     252: 'food',
@@ -120,3 +117,16 @@ export const CATEGORY_GROUND_LAYER_LIST = Object.freeze(
     .map<Category>(([categoryId, data]) => ({ category_id: categoryId, ...data }))
     .sort((a, b) => b.z_index - a.z_index)
 );
+
+export function resolveCategoryId(rawCategory: RawCategory, year: string): CategoryId | undefined {
+  const mappedCategory = CATEGORY_LAYER_MAPPINGS[year]?.[rawCategory.id];
+  if (mappedCategory) {
+    return mappedCategory;
+  }
+
+  if (rawCategory.fixed_id && OFFICIAL_FIXED_ID_MAPPINGS[rawCategory.fixed_id]) {
+    return OFFICIAL_FIXED_ID_MAPPINGS[rawCategory.fixed_id];
+  }
+
+  return;
+}
