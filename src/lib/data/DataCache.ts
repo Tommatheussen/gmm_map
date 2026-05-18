@@ -1,9 +1,9 @@
-import { CATEGORY_REGISTRY } from '$lib/data/Categories';
-import type { Category, RawCategory } from '$lib/interfaces/Category';
+import type { YearCategory, RawCategory } from '$lib/interfaces/Category';
 import type { Poi } from '$lib/interfaces/Poi';
+import { CATEGORY_REGISTRY, resolveCategoryId } from './Categories';
 
 interface YearData {
-  categories: Category[];
+  categories: YearCategory[];
   pois: Poi[];
 }
 
@@ -19,7 +19,7 @@ class DataCache {
       this.loadJSON<Poi[]>(`data/${year}/pois.json`)
     ]);
 
-    const yearData: YearData = { categories: this.convertCategories(rawCategories), pois };
+    const yearData: YearData = { categories: this.convertCategories(rawCategories, year), pois };
     this.cache.set(year, yearData);
     return yearData;
   }
@@ -30,28 +30,32 @@ class DataCache {
     return res.json();
   }
 
-  private convertCategories(rawCategories: RawCategory[]): Category[] {
-    const categories: Category[] = rawCategories.map((category) => {
-      const fixedCategory = CATEGORY_REGISTRY[category.fixed_id];
+  private convertCategories(rawCategories: RawCategory[], year: string): YearCategory[] {
+    return rawCategories.map((rawCategory) => {
+      const categoryId = resolveCategoryId(rawCategory, year);
+      const category = CATEGORY_REGISTRY[categoryId!];
 
-      if (!fixedCategory) {
-        console.warn(`Unified category not found for ID ${category.fixed_id}!`);
+      if (!category) {
+        console.warn(
+          `Unified category not found for ${year}/${rawCategory.id}: ${rawCategory.name}`
+        );
       }
 
       return {
-        id: category.id.toString(),
-        fixed_id: category.fixed_id.toString(),
-        name: fixedCategory?.name ?? category.name,
-        z_index: fixedCategory?.z_index ?? category.z_index,
-        color: fixedCategory?.color ?? category.color,
-        ground_layer: fixedCategory?.ground_layer ?? false
+        id: rawCategory.id,
+        category_id: categoryId ?? 'unmapped',
+        fixed_id: category?.fixed_id ?? rawCategory.fixed_id,
+        name: category?.name ?? rawCategory.name,
+        z_index: category?.z_index ?? rawCategory.z_index,
+        color: category?.color ?? rawCategory.color,
+        ground_layer: category?.ground_layer ?? false,
+        aliases: category?.aliases ?? []
       };
     });
-    return categories;
   }
 
   // Lazy accessors
-  async categories(year: string): Promise<Category[]> {
+  async categories(year: string): Promise<YearCategory[]> {
     return (await this.loadYear(year)).categories;
   }
 
