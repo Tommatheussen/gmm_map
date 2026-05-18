@@ -34,6 +34,12 @@ export default defineConfig(
     }
   },
   {
+    files: ['src/lib/data/Categories.ts'],
+    rules: {
+      '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^_' }]
+    }
+  },
+  {
     files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
     languageOptions: {
       parserOptions: {

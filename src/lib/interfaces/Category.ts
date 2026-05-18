@@ -1,12 +1,14 @@
-interface BaseCategory {
+import type { CategoryId } from '$lib/data/Categories';
+
+interface CategoryFields {
   name: string;
   z_index: number;
   color: string;
 }
 
-export interface RawCategory extends BaseCategory {
+export interface RawCategory extends CategoryFields {
   id: number;
-  fixed_id: number;
+  fixed_id?: number;
   type: string;
   priority: number;
   clickable: boolean;
@@ -20,11 +22,16 @@ export interface RawCategory extends BaseCategory {
   show_in_filter: boolean;
 }
 
-export interface FixedCategory extends BaseCategory {
+export interface CategoryDefinition extends CategoryFields {
+  fixed_id?: number;
   ground_layer?: boolean;
+  aliases?: readonly string[];
 }
 
-export interface Category extends FixedCategory {
-  id: string;
-  fixed_id: string;
+export interface Category extends CategoryDefinition {
+  category_id: CategoryId;
+}
+
+export interface YearCategory extends Category {
+  id: number; // The original category ID from the year's data, preserved for mapping POIs.
 }

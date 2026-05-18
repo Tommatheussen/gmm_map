@@ -14,9 +14,9 @@
     }
 
     hoverTimeout = setTimeout(() => {
-      categoryHighlightState.highlight = category.fixed_id;
+      categoryHighlightState.highlight = category.category_id;
       hoverTimeout = null;
-    }, 150);
+    }, 500);
   }
 
   function handleMouseLeave() {
@@ -36,7 +36,7 @@
 <label class="category-item" onmouseenter={handleMouseEnter} onmouseleave={handleMouseLeave}>
   <input
     type="checkbox"
-    bind:checked={categoryVisibilityState[category.fixed_id]}
+    bind:checked={categoryVisibilityState[category.category_id]}
     autocomplete="off"
   />
   <span class="category-color" style:background={category.color}></span>

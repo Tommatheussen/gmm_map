@@ -7,6 +7,13 @@
   "plugins": ["prettier-plugin-svelte"],
   "overrides": [
     {
+      "files": "src/lib/data/Categories.ts",
+      "options": {
+        "printWidth": 200,
+        "objectWrap": "collapse"
+      }
+    },
+    {
       "files": "*.svelte",
       "options": {
         "parser": "svelte"
