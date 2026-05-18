@@ -140,8 +140,8 @@ export class MapYearLayer {
     if (!group) return;
 
     group.setStyle({
-      weight: 1.5,
-      color: '#FFD54F'
+      weight: 2.5,
+      color: '#FFFFFF'
     });
 
     this._previousHighlightCategoryId = category_id;
