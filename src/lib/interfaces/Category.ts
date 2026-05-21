@@ -24,7 +24,6 @@ export interface RawCategory extends CategoryFields {
 
 export interface CategoryDefinition extends CategoryFields {
   fixed_id?: number;
-  ground_layer?: boolean;
   aliases?: readonly string[];
   group_id?: CategoryGroupId;
 }

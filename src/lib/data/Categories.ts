@@ -1,61 +1,70 @@
 import { type Category, type CategoryDefinition, type CategoryGroup, type CategoryGroupId, type RawCategory } from '$lib/interfaces/Category';
 
 export const CATEGORY_REGISTRY: Readonly<Record<string, CategoryDefinition>> = Object.freeze<Record<CategoryId, CategoryDefinition>>({
-  food: { color: '#D7B456', fixed_id: 1, name: 'Food', z_index: 43 },
-  drinks: { color: '#5A8E00', fixed_id: 2, name: 'Drinks', z_index: 42 },
-  activities: { color: '#529CFF', fixed_id: 3, name: 'Activities', z_index: 41 },
-  partners: { color: '#8354CF', fixed_id: 4, name: 'Partners', z_index: 40 },
-  stages: { color: '#580025', fixed_id: 5, name: 'Stages', z_index: 38 },
+  food: { color: '#D7B456', fixed_id: 1, group_id: 'food_drink', name: 'Food', z_index: 43 },
+  drinks: { color: '#5A8E00', fixed_id: 2, group_id: 'food_drink', name: 'Drinks', z_index: 42 },
+  activities: { color: '#529CFF', fixed_id: 3, group_id: 'festival', name: 'Activities', z_index: 41 },
+  partners: { color: '#8354CF', fixed_id: 4, group_id: 'festival', name: 'Partners', z_index: 40 },
+  stages: { color: '#580025', fixed_id: 5, group_id: 'festival', name: 'Stages', z_index: 38 },
   camping_grounds: { color: '#016752', fixed_id: 6, group_id: 'camping', name: 'Camping Grounds', z_index: 7 },
-  emergency_exits: { color: '#A32828', fixed_id: 7, name: 'Emergency Exits', z_index: 25 },
-  water_fountains: { aliases: ['Free Tap Water'], color: '#57D7E7', fixed_id: 8, name: 'Water Fountains', z_index: 34 },
-  first_aid: { color: '#FFFFFF', fixed_id: 9, name: 'First Aid', z_index: 36 },
-  toilets: { color: '#1BA5D1', fixed_id: 10, name: 'Toilets', z_index: 35 },
-  parking: { color: '#7A91AC', fixed_id: 11, name: 'Parking', z_index: 32 },
-  shelter: { color: '#37A85E', fixed_id: 12, name: 'Shelter', z_index: 30 },
-  check_in: { color: '#ABA083', fixed_id: 13, name: 'Check-in', z_index: 29 },
-  showers: { color: '#5AD8FF', fixed_id: 14, name: 'Showers', z_index: 33 },
-  charging_station: { color: '#FDDA27', fixed_id: 15, name: 'Charging Station', z_index: 28 },
-  disabled_facilities: { aliases: ['Wheelchair Access'], color: '#5A8E21', fixed_id: 16, name: 'Disabled Facilities', z_index: 39 },
-  vip: { color: '#B99946', fixed_id: 17, name: 'VIP', z_index: 27 },
-  info: { color: '#4CC0C7', fixed_id: 18, name: 'Info', z_index: 26 },
-  entrance: { color: '#8E0900', fixed_id: 19, name: 'Entrance', z_index: 22 },
-  event_grounds: { aliases: ['Festival Grounds'], color: '#BBC200', fixed_id: 20, ground_layer: true, name: 'Event Grounds', z_index: 2 },
-  walkway: { color: '#D0BE94', fixed_id: 21, name: 'Walkway', z_index: 12 },
-  vouchers: { aliases: ['Tokens', 'Skullies'], color: '#6A8F71', fixed_id: 22, name: 'Vouchers', z_index: 24 },
-  wristbands: { color: '#FFA44E', fixed_id: 23, name: 'Wristbands', z_index: 23 },
-  bike_parking: { color: '#8DAA9D', fixed_id: 24, name: 'Bike Parking', z_index: 31 },
-  lost_and_found: { color: '#C58EE2', fixed_id: 25, name: 'Lost & Found', z_index: 21 },
-  ticketing: { color: '#D04D4D', fixed_id: 26, name: 'Ticketing', z_index: 20 },
-  disability_parking: { color: '#505D6D', fixed_id: 27, name: 'Disability Parking', z_index: 19 },
-  atm: { aliases: ['Cashless Helpdesk'], color: '#1F66B8', fixed_id: 28, name: 'ATM', z_index: 18 },
-  kiss_and_ride: { color: '#F86274', fixed_id: 29, name: 'Kiss & Ride', z_index: 17 },
-  merchandise: { aliases: ['Shops'], color: '#AA5E1B', fixed_id: 30, name: 'Merchandise', z_index: 16 },
-  recycle_points: { aliases: ['Recycle Point'], color: '#7AA54F', fixed_id: 31, name: 'Recycle Points', z_index: 15 },
-  lockers: { color: '#C94959', fixed_id: 32, name: 'Lockers', z_index: 37 },
-  wifi_zone: { color: '#04052E', fixed_id: 33, name: 'WiFi Zone', z_index: 13 },
-  general: { color: '#9AACAB', fixed_id: 34, name: 'General', z_index: 8 },
-  grounds: { aliases: ['Ground'], color: '#8D8D8D', fixed_id: 35, ground_layer: true, name: 'Grounds', z_index: 1 },
-  food_area_underground: { aliases: ['Food Corner Ground'], color: '#919600', fixed_id: 36, name: 'Food Area Underground', z_index: 4 },
-  wooden_plates: { color: '#D0BE94', fixed_id: 37, name: 'Wooden Plates', z_index: 6 },
-  metal_market: { color: '#6E8126', fixed_id: 38, name: 'Metal Market', z_index: 5 },
-  shuttles: { color: '#D24905', fixed_id: 39, name: 'Shuttles', z_index: 14 },
-  fences: { color: '#9E9E9E', fixed_id: 40, name: 'Fences', z_index: 30 },
-  foodcorner: { color: '#D0D5E5', fixed_id: 41, name: 'Foodcorner', z_index: 10 },
-  tribune: { aliases: ['Tent Tribune'], color: '#7D767E', fixed_id: 42, name: 'Tribune', z_index: 9 },
-  crosses: { color: '#000000', fixed_id: 43, name: 'Crosses', z_index: 11 },
-  light_green_camping_grounds: { aliases: ['Light Green Ground'], color: '#CADC8C', fixed_id: 44, ground_layer: true, name: 'Light Green Camping Grounds', z_index: 0 },
+  emergency_exits: { color: '#A32828', fixed_id: 7, group_id: 'travel_access', name: 'Emergency Exits', z_index: 25 },
+  water_fountains: { aliases: ['Free Tap Water'], color: '#57D7E7', fixed_id: 8, group_id: 'food_drink', name: 'Water Fountains', z_index: 34 },
+  first_aid: { color: '#FFFFFF', fixed_id: 9, group_id: 'festival', name: 'First Aid', z_index: 36 },
+  toilets: { color: '#1BA5D1', fixed_id: 10, group_id: 'festival', name: 'Toilets', z_index: 35 },
+  parking: { color: '#7A91AC', fixed_id: 11, group_id: 'travel_access', name: 'Parking', z_index: 32 },
+  shelter: { color: '#37A85E', fixed_id: 12, group_id: 'festival', name: 'Shelter', z_index: 30 },
+  check_in: { color: '#ABA083', fixed_id: 13, group_id: 'travel_access', name: 'Check-in', z_index: 29 },
+  showers: { color: '#5AD8FF', fixed_id: 14, group_id: 'festival', name: 'Showers', z_index: 33 },
+  charging_station: { color: '#FDDA27', fixed_id: 15, group_id: 'festival', name: 'Charging Station', z_index: 28 },
+  disabled_facilities: { aliases: ['Wheelchair Access'], color: '#5A8E21', fixed_id: 16, group_id: 'festival', name: 'Disabled Facilities', z_index: 39 },
+  vip: { color: '#B99946', fixed_id: 17, group_id: 'festival', name: 'VIP', z_index: 27 },
+  info: { color: '#4CC0C7', fixed_id: 18, group_id: 'festival', name: 'Info', z_index: 26 },
+  entrance: { color: '#8E0900', fixed_id: 19, group_id: 'travel_access', name: 'Entrance', z_index: 22 },
+  event_grounds: { aliases: ['Festival Grounds'], color: '#BBC200', fixed_id: 20, group_id: 'map_areas', name: 'Event Grounds', z_index: 2 },
+  walkway: { color: '#D0BE94', fixed_id: 21, group_id: 'travel_access', name: 'Walkway', z_index: 12 },
+  vouchers: { aliases: ['Tokens', 'Skullies'], color: '#6A8F71', fixed_id: 22, group_id: 'festival', name: 'Vouchers', z_index: 24 },
+  wristbands: { color: '#FFA44E', fixed_id: 23, group_id: 'festival', name: 'Wristbands', z_index: 23 },
+  bike_parking: { color: '#8DAA9D', fixed_id: 24, group_id: 'travel_access', name: 'Bike Parking', z_index: 31 },
+  lost_and_found: { color: '#C58EE2', fixed_id: 25, group_id: 'festival', name: 'Lost & Found', z_index: 21 },
+  ticketing: { color: '#D04D4D', fixed_id: 26, group_id: 'festival', name: 'Ticketing', z_index: 20 },
+  disability_parking: { color: '#505D6D', fixed_id: 27, group_id: 'travel_access', name: 'Disability Parking', z_index: 19 },
+  atm: { aliases: ['Cashless Helpdesk'], color: '#1F66B8', fixed_id: 28, group_id: 'festival', name: 'ATM', z_index: 18 },
+  kiss_and_ride: { color: '#F86274', fixed_id: 29, group_id: 'travel_access', name: 'Kiss & Ride', z_index: 17 },
+  merchandise: { aliases: ['Shops'], color: '#AA5E1B', fixed_id: 30, group_id: 'festival', name: 'Merchandise', z_index: 16 },
+  recycle_points: { aliases: ['Recycle Point'], color: '#7AA54F', fixed_id: 31, group_id: 'festival', name: 'Recycle Points', z_index: 15 },
+  lockers: { color: '#C94959', fixed_id: 32, group_id: 'festival', name: 'Lockers', z_index: 37 },
+  wifi_zone: { color: '#04052E', fixed_id: 33, group_id: 'festival', name: 'WiFi Zone', z_index: 13 },
+  general: { color: '#9AACAB', fixed_id: 34, group_id: 'other', name: 'General', z_index: 8 },
+  grounds: { aliases: ['Ground'], color: '#8D8D8D', fixed_id: 35, group_id: 'map_areas', name: 'Grounds', z_index: 1 },
+  food_area_underground: { aliases: ['Food Corner Ground'], color: '#919600', fixed_id: 36, group_id: 'map_areas', name: 'Food Area Underground', z_index: 4 },
+  wooden_plates: { color: '#D0BE94', fixed_id: 37, group_id: 'other', name: 'Wooden Plates', z_index: 6 },
+  metal_market: { color: '#6E8126', fixed_id: 38, group_id: 'festival', name: 'Metal Market', z_index: 5 },
+  shuttles: { color: '#D24905', fixed_id: 39, group_id: 'travel_access', name: 'Shuttles', z_index: 14 },
+  fences: { color: '#9E9E9E', fixed_id: 40, group_id: 'other', name: 'Fences', z_index: 30 },
+  foodcorner: { color: '#D0D5E5', fixed_id: 41, group_id: 'festival', name: 'Foodcorner', z_index: 10 },
+  tribune: { aliases: ['Tent Tribune'], color: '#7D767E', fixed_id: 42, group_id: 'other', name: 'Tribune', z_index: 9 },
+  crosses: { color: '#000000', fixed_id: 43, group_id: 'other', name: 'Crosses', z_index: 11 },
+  light_green_camping_grounds: { aliases: ['Light Green Ground'], color: '#CADC8C', fixed_id: 44, group_id: 'map_areas', name: 'Light Green Camping Grounds', z_index: 0 },
 
   // Without fixed_id here
+  friends_zone: { color: '#ffcc00', group_id: 'camping', name: 'Friends Zone', z_index: 0 },
   festitent: { color: '#6b6342', group_id: 'camping', name: 'Festitent', z_index: 0 },
   festihut: { color: '#6b6342', group_id: 'camping', name: 'Festihut', z_index: 0 },
+  boutique_tents: { color: '#ffcc00', group_id: 'camping', name: 'Boutique Tents', z_index: 0 },
   metal_town: { color: '#ffcc00', group_id: 'camping', name: 'Metal Town', z_index: 0 },
   the_crypt: { color: '#ffcc00', group_id: 'camping', name: 'The Crypt', z_index: 0 }
 });
 
 export type CategoryId = keyof typeof CATEGORY_REGISTRY;
 
-export const CATEGORY_GROUP_REGISTRY: Readonly<Record<CategoryGroupId, string>> = Object.freeze({ camping: 'Camping' });
+export const CATEGORY_GROUP_REGISTRY: Readonly<Record<CategoryGroupId, string>> = Object.freeze({
+  food_drink: 'Food & Drink',
+  festival: 'Festival',
+  camping: 'Camping',
+  travel_access: 'Travel & Access',
+  other: 'Other',
+  map_areas: 'Map Areas'
+});
 
 export const CATEGORY_GROUP_LIST = Object.freeze(
   Object.entries(CATEGORY_GROUP_REGISTRY).map<CategoryGroup>(([categoryGroupId, name]) => ({ category_group_id: categoryGroupId, name, category_ids: getCategoryGroupCategoryIds(categoryGroupId) }))
@@ -88,7 +97,7 @@ export const OFFICIAL_FIXED_ID_MAPPINGS = Object.freeze(
 export const CATEGORY_LAYER_MAPPINGS: Readonly<Record<string, Record<number, CategoryId>>> = Object.freeze<Record<number, Record<string, CategoryId>>>({
   // Sparse historical overrides for fixed IDs that were reused with a different meaning.
   2022: { 2503: 'first_aid' },
-  2023: { 6169: 'first_aid', 294910: 'metal_town' },
+  2023: { 294910: 'metal_town', 6169: 'first_aid' },
   2024: { 10560: 'festihut' },
   2025: { 15487: 'festitent', 15492: 'festihut' },
   // Temporary raw layer ID mapping until 2026 fixed_id values are available.
@@ -127,10 +136,10 @@ export const CATEGORY_LAYER_MAPPINGS: Readonly<Record<string, Record<number, Cat
     283: 'lockers',
     284: 'wifi_zone',
     285: 'general',
-    414: 'camping_ground',
+    414: 'friends_zone',
     415: 'festitent',
     416: 'lockers',
-    417: 'camping_grounds',
+    417: 'boutique_tents',
     418: 'metal_town',
     487: 'lockers',
     488: 'the_crypt'
@@ -139,14 +148,6 @@ export const CATEGORY_LAYER_MAPPINGS: Readonly<Record<string, Record<number, Cat
 
 export const CATEGORY_LIST = Object.freeze(
   Object.entries(CATEGORY_REGISTRY)
-    .filter(([, data]) => !data.ground_layer)
-    .map<Category>(([categoryId, data]) => ({ category_id: categoryId, ...data }))
-    .sort((a, b) => b.z_index - a.z_index)
-);
-
-export const CATEGORY_GROUND_LAYER_LIST = Object.freeze(
-  Object.entries(CATEGORY_REGISTRY)
-    .filter(([, data]) => data.ground_layer)
     .map<Category>(([categoryId, data]) => ({ category_id: categoryId, ...data }))
     .sort((a, b) => b.z_index - a.z_index)
 );

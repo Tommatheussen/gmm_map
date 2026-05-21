@@ -8,6 +8,7 @@ import { FeatureGroup, LayerGroup, type Map as LeafletMap, Polygon } from 'leafl
 import { categoryVisibilityState } from '$lib/data/State.svelte';
 import type { Poi, PoiTag } from '$lib/interfaces/Poi';
 import type { CategoryId } from '$lib/data/Categories';
+import { dev } from '$app/environment';
 
 const BASE_Z_INDEX = 400;
 
@@ -112,7 +113,7 @@ export class MapYearLayer {
         const polygon = new Polygon(latlngs, {
           color: '#333',
           fillColor: cat.color,
-          fillOpacity: cat.ground_layer ? 1 : 0.75,
+          fillOpacity: dev ? 0.75 : 1,
           weight: 1,
           pane: `year-${this.year}-cat-${cat.id}`
         });
