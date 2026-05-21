@@ -1,6 +1,7 @@
 <script lang="ts">
   import { CATEGORY_GROUP_LIST, CATEGORY_LIST } from '$lib/data/Categories';
   import CategoryItem from '$lib/components/CategoryItem.svelte';
+  import { categoryVisibilityState } from '$lib/data/State.svelte';
   import type { Category, CategoryGroup } from '$lib/interfaces/Category';
 
   type VisibleCategoryGroup = CategoryGroup & { categories: Category[] };
@@ -46,6 +47,37 @@
     });
   }
 
+  function isCategoryVisible(category: Category): boolean {
+    return categoryVisibilityState[category.category_id] !== false;
+  }
+
+  function isGroupChecked(group: VisibleCategoryGroup): boolean {
+    return group.categories.length > 0 && group.categories.every(isCategoryVisible);
+  }
+
+  function isGroupMixed(group: VisibleCategoryGroup): boolean {
+    const visibleCount = group.categories.filter(isCategoryVisible).length;
+    return visibleCount > 0 && visibleCount < group.categories.length;
+  }
+
+  function toggleGroup(group: VisibleCategoryGroup): void {
+    const visible = !isGroupChecked(group);
+
+    for (const category of group.categories) {
+      categoryVisibilityState[category.category_id] = visible;
+    }
+  }
+
+  function indeterminate(node: HTMLInputElement, value: boolean) {
+    node.indeterminate = value;
+
+    return {
+      update(nextValue: boolean) {
+        node.indeterminate = nextValue;
+      }
+    };
+  }
+
   let searchQuery = $state('');
   let normalizedSearchQuery = $derived(searchQuery.trim().toLowerCase());
   let filteredCategoryGroups = $derived(filterGroups(normalizedSearchQuery));
@@ -67,10 +99,16 @@
   <div class="category-list">
     {#each filteredCategoryGroups as group (group.category_group_id)}
       <section class="category-group" aria-labelledby={`category-group-${group.category_group_id}`}>
-        <div id={`category-group-${group.category_group_id}`} class="category-group-header">
-          <span class="category-group-marker"></span>
+        <label id={`category-group-${group.category_group_id}`} class="category-group-header">
+          <input
+            type="checkbox"
+            checked={isGroupChecked(group)}
+            use:indeterminate={isGroupMixed(group)}
+            onchange={() => toggleGroup(group)}
+            autocomplete="off"
+          />
           <span class="category-group-name">{group.name}</span>
-        </div>
+        </label>
 
         <div class="category-group-items">
           {#each group.categories as category (category.category_id)}
@@ -144,14 +182,15 @@
     color: var(--title-color);
     font-size: var(--label-size);
     font-weight: 600;
+    cursor: pointer;
   }
 
-  .category-group-marker {
-    width: 0.45rem;
-    height: 0.45rem;
-    border-radius: 50%;
-    background: var(--title-color);
-    opacity: 0.65;
+  .category-group-header input[type='checkbox'] {
+    accent-color: #4a8ef0;
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+    margin: 0;
   }
 
   .category-group-name {
