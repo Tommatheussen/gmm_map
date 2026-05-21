@@ -6,7 +6,7 @@ interface CategoryFields {
 
 export interface RawCategory extends CategoryFields {
   id: number;
-  fixed_id: number;
+  fixed_id?: number;
   type: string;
   priority: number;
   clickable: boolean;
@@ -18,6 +18,10 @@ export interface RawCategory extends CategoryFields {
   show_in_list: boolean;
   modified_at: Date;
   show_in_filter: boolean;
+}
+
+export interface CorrectedRawCategory extends RawCategory {
+  fixed_id: number;
 }
 
 export interface CategoryDefinition extends CategoryFields {

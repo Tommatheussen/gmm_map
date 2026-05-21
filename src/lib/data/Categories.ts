@@ -1,4 +1,4 @@
-import { type Category, type CategoryGroup, type CategoryGroupId, type RawCategory } from '$lib/interfaces/Category';
+import { type Category, type CategoryGroup, type CategoryGroupId, type CorrectedRawCategory } from '$lib/interfaces/Category';
 
 // App-owned fixed IDs start at 10000 to avoid collisions with official GMM fixed_id values.
 export const CATEGORY_LIST: readonly Category[] = Object.freeze(
@@ -81,6 +81,6 @@ export const FIXED_ID_CATEGORY_REGISTRY = Object.freeze(
   }, {})
 );
 
-export function resolveCategory(rawCategory: RawCategory): Category | undefined {
+export function resolveCategory(rawCategory: CorrectedRawCategory): Category | undefined {
   return FIXED_ID_CATEGORY_REGISTRY[rawCategory.fixed_id];
 }

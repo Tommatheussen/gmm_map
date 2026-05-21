@@ -1,4 +1,9 @@
-import type { DataOverrides, RawCategory, YearCategory } from '$lib/interfaces/Category';
+import type {
+  CorrectedRawCategory,
+  DataOverrides,
+  RawCategory,
+  YearCategory
+} from '$lib/interfaces/Category';
 import type { Poi } from '$lib/interfaces/Poi';
 import { resolveCategory } from './Categories';
 
@@ -42,16 +47,19 @@ class DataCache {
   private applyLayerOverrides(
     rawCategories: RawCategory[],
     overrides: DataOverrides | undefined
-  ): RawCategory[] {
-    if (!overrides?.layers) return rawCategories;
+  ): CorrectedRawCategory[] {
+    if (!overrides?.layers) return rawCategories as CorrectedRawCategory[];
 
-    return rawCategories.map((rawCategory) => ({
-      ...rawCategory,
-      ...overrides.layers?.[rawCategory.id]
-    }));
+    return rawCategories.map(
+      (rawCategory) =>
+        ({
+          ...rawCategory,
+          ...overrides.layers?.[rawCategory.id]
+        }) as CorrectedRawCategory
+    );
   }
 
-  private convertCategories(rawCategories: RawCategory[]): YearCategory[] {
+  private convertCategories(rawCategories: CorrectedRawCategory[]): YearCategory[] {
     return rawCategories.map((rawCategory) => {
       const category = resolveCategory(rawCategory)!;
 
