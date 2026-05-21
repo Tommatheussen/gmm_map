@@ -1,5 +1,6 @@
 import { type Category, type CategoryDefinition, type CategoryGroup, type CategoryGroupId, type RawCategory } from '$lib/interfaces/Category';
 
+// App-owned fixed IDs start at 10000 to avoid collisions with official GMM fixed_id values.
 export const CATEGORY_REGISTRY: Readonly<Record<string, CategoryDefinition>> = Object.freeze<Record<CategoryId, CategoryDefinition>>({
   food: { color: '#D7B456', fixed_id: 1, group_id: 'food_drink', name: 'Food', z_index: 43 },
   drinks: { color: '#5A8E00', fixed_id: 2, group_id: 'food_drink', name: 'Drinks', z_index: 42 },
@@ -46,13 +47,12 @@ export const CATEGORY_REGISTRY: Readonly<Record<string, CategoryDefinition>> = O
   crosses: { color: '#000000', fixed_id: 43, group_id: 'other', name: 'Crosses', z_index: 11 },
   light_green_camping_grounds: { aliases: ['Light Green Ground'], color: '#CADC8C', fixed_id: 44, group_id: 'map_areas', name: 'Light Green Camping Grounds', z_index: 0 },
 
-  // Without fixed_id here
-  friends_zone: { color: '#ffcc00', group_id: 'camping', name: 'Friends Zone', z_index: 0 },
-  festitent: { color: '#6b6342', group_id: 'camping', name: 'Festitent', z_index: 0 },
-  festihut: { color: '#6b6342', group_id: 'camping', name: 'Festihut', z_index: 0 },
-  boutique_tents: { color: '#ffcc00', group_id: 'camping', name: 'Boutique Tents', z_index: 0 },
-  metal_town: { color: '#ffcc00', group_id: 'camping', name: 'Metal Town', z_index: 0 },
-  the_crypt: { color: '#ffcc00', group_id: 'camping', name: 'The Crypt', z_index: 0 }
+  friends_zone: { aliases: ['Camping Ground Friends Zones'], color: '#ffcc00', fixed_id: 10000, group_id: 'camping', name: 'Friends Zone', z_index: 0 },
+  festitent: { aliases: ['Camping Ground CBY Festitent'], color: '#6b6342', fixed_id: 10001, group_id: 'camping', name: 'Festitent', z_index: 0 },
+  festihut: { color: '#6b6342', fixed_id: 10002, group_id: 'camping', name: 'Festihut', z_index: 0 },
+  boutique_tents: { aliases: ['Camping ground Boutique'], color: '#ffcc00', fixed_id: 10003, group_id: 'camping', name: 'Boutique Tents', z_index: 0 },
+  metal_town: { color: '#ffcc00', fixed_id: 10004, group_id: 'camping', name: 'Metal Town', z_index: 0 },
+  the_crypt: { aliases: ['The Crypt Camping Ground'], color: '#ffcc00', fixed_id: 10005, group_id: 'camping', name: 'The Crypt', z_index: 0 }
 });
 
 export type CategoryId = keyof typeof CATEGORY_REGISTRY;
@@ -94,71 +94,14 @@ export const OFFICIAL_FIXED_ID_MAPPINGS = Object.freeze(
   }, {})
 );
 
-export const CATEGORY_LAYER_MAPPINGS: Readonly<Record<string, Record<number, CategoryId>>> = Object.freeze<Record<number, Record<string, CategoryId>>>({
-  // Sparse historical overrides for fixed IDs that were reused with a different meaning.
-  2022: { 2503: 'first_aid' },
-  2023: { 294910: 'metal_town', 6169: 'first_aid' },
-  2024: { 10560: 'festihut' },
-  2025: { 15487: 'festitent', 15492: 'festihut' },
-  // Temporary raw layer ID mapping until 2026 fixed_id values are available.
-  2026: {
-    252: 'food',
-    253: 'drinks',
-    254: 'activities',
-    255: 'partners',
-    256: 'stages',
-    257: 'camping_grounds',
-    258: 'emergency_exits',
-    259: 'water_fountains',
-    260: 'first_aid',
-    261: 'toilets',
-    262: 'parking',
-    263: 'shelter',
-    264: 'check_in',
-    265: 'showers',
-    266: 'charging_station',
-    267: 'disabled_facilities',
-    268: 'vip',
-    269: 'info',
-    270: 'entrance',
-    271: 'event_grounds',
-    272: 'walkway',
-    273: 'vouchers',
-    274: 'wristbands',
-    275: 'bike_parking',
-    276: 'lost_and_found',
-    277: 'ticketing',
-    278: 'disability_parking',
-    279: 'atm',
-    280: 'kiss_and_ride',
-    281: 'merchandise',
-    282: 'recycle_points',
-    283: 'lockers',
-    284: 'wifi_zone',
-    285: 'general',
-    414: 'friends_zone',
-    415: 'festitent',
-    416: 'lockers',
-    417: 'boutique_tents',
-    418: 'metal_town',
-    487: 'lockers',
-    488: 'the_crypt'
-  }
-});
-
 export const CATEGORY_LIST = Object.freeze(
   Object.entries(CATEGORY_REGISTRY)
     .map<Category>(([categoryId, data]) => ({ category_id: categoryId, ...data }))
     .sort((a, b) => b.z_index - a.z_index)
 );
 
-export function resolveCategoryId(rawCategory: RawCategory, year: string): CategoryId | undefined {
-  const mappedCategory = CATEGORY_LAYER_MAPPINGS[year]?.[rawCategory.id];
-  if (mappedCategory) {
-    return mappedCategory;
-  }
-
-  if (rawCategory.fixed_id && OFFICIAL_FIXED_ID_MAPPINGS[rawCategory.fixed_id]) {
+export function resolveCategoryId(rawCategory: RawCategory): CategoryId | undefined {
+  if (rawCategory.fixed_id) {
     return OFFICIAL_FIXED_ID_MAPPINGS[rawCategory.fixed_id];
   }
 

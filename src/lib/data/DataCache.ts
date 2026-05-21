@@ -1,4 +1,4 @@
-import type { YearCategory, RawCategory } from '$lib/interfaces/Category';
+import type { DataOverrides, RawCategory, YearCategory } from '$lib/interfaces/Category';
 import type { Poi } from '$lib/interfaces/Poi';
 import { CATEGORY_REGISTRY, resolveCategoryId } from './Categories';
 
@@ -14,12 +14,14 @@ class DataCache {
   private async loadYear(year: string): Promise<YearData> {
     if (this.cache.has(year)) return this.cache.get(year)!;
 
-    const [rawCategories, pois] = await Promise.all([
+    const [rawCategories, pois, overrides] = await Promise.all([
       this.loadJSON<RawCategory[]>(`data/${year}/layers.json`),
-      this.loadJSON<Poi[]>(`data/${year}/pois.json`)
+      this.loadJSON<Poi[]>(`data/${year}/pois.json`),
+      this.loadOptionalJSON<DataOverrides>(`data/${year}/overrides.json`)
     ]);
 
-    const yearData: YearData = { categories: this.convertCategories(rawCategories, year), pois };
+    const categories = this.applyLayerOverrides(rawCategories, overrides);
+    const yearData: YearData = { categories: this.convertCategories(categories), pois };
     this.cache.set(year, yearData);
     return yearData;
   }
@@ -30,26 +32,39 @@ class DataCache {
     return res.json();
   }
 
-  private convertCategories(rawCategories: RawCategory[], year: string): YearCategory[] {
-    return rawCategories.map((rawCategory) => {
-      const categoryId = resolveCategoryId(rawCategory, year);
-      const category = CATEGORY_REGISTRY[categoryId!];
+  private async loadOptionalJSON<T>(url: string): Promise<T | undefined> {
+    const res = await fetch(url);
+    if (res.status === 404) return;
+    if (!res.ok) throw new Error(`Failed to load ${url}: ${res.status}`);
+    return res.json();
+  }
 
-      if (!category) {
-        console.warn(
-          `Unified category not found for ${year}/${rawCategory.id}: ${rawCategory.name}`
-        );
-      }
+  private applyLayerOverrides(
+    rawCategories: RawCategory[],
+    overrides: DataOverrides | undefined
+  ): RawCategory[] {
+    if (!overrides?.layers) return rawCategories;
+
+    return rawCategories.map((rawCategory) => ({
+      ...rawCategory,
+      ...overrides.layers?.[rawCategory.id]
+    }));
+  }
+
+  private convertCategories(rawCategories: RawCategory[]): YearCategory[] {
+    return rawCategories.map((rawCategory) => {
+      const categoryId = resolveCategoryId(rawCategory)!;
+      const category = CATEGORY_REGISTRY[categoryId];
 
       return {
         id: rawCategory.id,
-        category_id: categoryId ?? 'unmapped',
-        fixed_id: category?.fixed_id ?? rawCategory.fixed_id,
-        name: category?.name ?? rawCategory.name,
-        z_index: category?.z_index ?? rawCategory.z_index,
-        color: category?.color ?? rawCategory.color,
-        group_id: category?.group_id,
-        aliases: category?.aliases ?? []
+        category_id: categoryId,
+        fixed_id: category.fixed_id,
+        name: category.name,
+        z_index: category.z_index,
+        color: category.color,
+        group_id: category.group_id,
+        aliases: category.aliases ?? []
       };
     });
   }

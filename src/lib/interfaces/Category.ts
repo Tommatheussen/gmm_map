@@ -43,3 +43,11 @@ export interface CategoryGroup {
 export interface YearCategory extends Category {
   id: number; // The original category ID from the year's data, preserved for mapping POIs.
 }
+
+export interface LayerOverride {
+  fixed_id: number;
+}
+
+export interface DataOverrides {
+  layers?: Record<string, LayerOverride>;
+}
