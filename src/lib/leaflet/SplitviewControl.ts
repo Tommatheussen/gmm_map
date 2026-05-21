@@ -13,6 +13,8 @@ export class SplitviewControl extends Control {
   private _splitposition: number = 0.5; // 0–1 fraction of map width
   private _dragging = false;
   private _addedToMap = false;
+  private _resizeObserver?: ResizeObserver;
+  private _resizeFrame?: number;
 
   constructor(options?: { initialSplit?: number }) {
     super({ position: 'topleft' });
@@ -27,7 +29,7 @@ export class SplitviewControl extends Control {
     if (!this._addedToMap) {
       this._map = map;
       this._initLayout();
-      this._updateClipping();
+      this._updateLayout();
       this._attachEvents();
       this._addedToMap = true;
     }
@@ -53,25 +55,24 @@ export class SplitviewControl extends Control {
   setLayers(left: MapYearLayer, right: MapYearLayer) {
     this._leftLayerGroup = left;
     this._rightLayerGroup = right;
-    this._updateClipping();
+    this._updateLayout();
   }
 
   setBaseLayer(layer: MapYearLayer) {
     this._rightLayerGroup = layer;
     this._setRightBadgeContent();
-    this._updateClipping();
+    this._updateLayout();
   }
 
   setCompareLayer(layer: MapYearLayer) {
     this._leftLayerGroup = layer;
     this._setLeftBadgeContent();
-    this._updateClipping();
+    this._updateLayout();
   }
 
   setSplit(position: number) {
     this._splitposition = Math.min(Math.max(position, 0), 1);
-    this._updateDivider();
-    this._updateClipping();
+    this._updateLayout();
   }
 
   private _setLeftBadgeContent() {
@@ -92,8 +93,6 @@ export class SplitviewControl extends Control {
     this._rightBadge = DomUtil.create('div', 'leaflet-splitview-divider-badge right', badges);
     this._setRightBadgeContent();
 
-    div.style.height = `${this._map!.getSize().y}px`;
-
     this._divider = div;
     this._updateDivider();
   }
@@ -104,6 +103,7 @@ export class SplitviewControl extends Control {
     const x = mapSize.x * this._splitposition;
     const dividerOffset = this._divider.offsetWidth / 2; // Account for divider's own width
     this._divider.style.left = `${x - dividerOffset}px`;
+    this._divider.style.height = `${mapSize.y}px`;
   }
 
   private _attachEvents() {
@@ -111,13 +111,22 @@ export class SplitviewControl extends Control {
 
     DomEvent.disableClickPropagation(divider);
     DomEvent.on(divider, 'mousedown', this._onMouseDown, this);
-    this._map!.on('move zoom resize', this._updateClipping, this);
+    this._map!.on('move zoom resize', this._updateLayout, this);
+    this._resizeObserver = new ResizeObserver(() => this._queueResizeUpdate());
+    this._resizeObserver.observe(this._map!.getContainer());
   }
 
   private _detachEvents() {
     const divider = this._divider!;
     DomEvent.off(divider, 'mousedown', this._onMouseDown, this);
-    this._map!.off('move zoom resize', this._updateClipping, this);
+    this._map!.off('move zoom resize', this._updateLayout, this);
+    this._resizeObserver?.disconnect();
+    this._resizeObserver = undefined;
+
+    if (this._resizeFrame !== undefined) {
+      cancelAnimationFrame(this._resizeFrame);
+      this._resizeFrame = undefined;
+    }
   }
 
   private _onMouseDown() {
@@ -140,6 +149,21 @@ export class SplitviewControl extends Control {
     DomEvent.off(this._map!.getContainer(), 'mousemove', this._onMouseMove, this);
     DomEvent.off(this._map!.getContainer(), 'mouseup', this._onMouseUp, this);
     this._map?.fire('splitend');
+  }
+
+  private _queueResizeUpdate() {
+    if (this._resizeFrame !== undefined) return;
+
+    this._resizeFrame = requestAnimationFrame(() => {
+      this._resizeFrame = undefined;
+      this._map?.invalidateSize({ pan: false });
+      this._updateLayout();
+    });
+  }
+
+  private _updateLayout() {
+    this._updateDivider();
+    this._updateClipping();
   }
 
   private _updateClipping() {
