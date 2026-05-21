@@ -1,6 +1,6 @@
 import type { DataOverrides, RawCategory, YearCategory } from '$lib/interfaces/Category';
 import type { Poi } from '$lib/interfaces/Poi';
-import { CATEGORY_REGISTRY, resolveCategoryId } from './Categories';
+import { resolveCategory } from './Categories';
 
 interface YearData {
   categories: YearCategory[];
@@ -53,18 +53,11 @@ class DataCache {
 
   private convertCategories(rawCategories: RawCategory[]): YearCategory[] {
     return rawCategories.map((rawCategory) => {
-      const categoryId = resolveCategoryId(rawCategory)!;
-      const category = CATEGORY_REGISTRY[categoryId];
+      const category = resolveCategory(rawCategory)!;
 
       return {
-        id: rawCategory.id,
-        category_id: categoryId,
-        fixed_id: category.fixed_id,
-        name: category.name,
-        z_index: category.z_index,
-        color: category.color,
-        group_id: category.group_id,
-        aliases: category.aliases ?? []
+        ...category,
+        id: rawCategory.id
       };
     });
   }

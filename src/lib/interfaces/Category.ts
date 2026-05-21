@@ -8,7 +8,7 @@ interface CategoryFields {
 
 export interface RawCategory extends CategoryFields {
   id: number;
-  fixed_id?: number;
+  fixed_id: number;
   type: string;
   priority: number;
   clickable: boolean;
@@ -23,9 +23,9 @@ export interface RawCategory extends CategoryFields {
 }
 
 export interface CategoryDefinition extends CategoryFields {
-  fixed_id?: number;
+  fixed_id: number;
   aliases?: readonly string[];
-  group_id?: CategoryGroupId;
+  group_id: CategoryGroupId;
 }
 
 export interface Category extends CategoryDefinition {

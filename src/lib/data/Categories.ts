@@ -84,25 +84,23 @@ export function getCategoryGroupCategoryIds(groupId: CategoryGroupId): readonly 
     .map(([categoryId]) => categoryId as CategoryId);
 }
 
-export const OFFICIAL_FIXED_ID_MAPPINGS = Object.freeze(
-  Object.entries(CATEGORY_REGISTRY).reduce<Record<number, CategoryId>>((mapping, [categoryId, category]) => {
-    if (category.fixed_id !== undefined) {
-      mapping[category.fixed_id] = categoryId as CategoryId;
-    }
+export const CATEGORY_LIST = Object.freeze(
+  Object.entries(CATEGORY_REGISTRY)
+    .map<Category>(([categoryId, data]) => ({ category_id: categoryId as CategoryId, ...data }))
+    .sort((a, b) => b.z_index - a.z_index)
+);
+
+export const FIXED_ID_CATEGORY_REGISTRY = Object.freeze(
+  CATEGORY_LIST.reduce<Record<number, Category>>((mapping, category) => {
+    mapping[category.fixed_id] = category;
 
     return mapping;
   }, {})
 );
 
-export const CATEGORY_LIST = Object.freeze(
-  Object.entries(CATEGORY_REGISTRY)
-    .map<Category>(([categoryId, data]) => ({ category_id: categoryId, ...data }))
-    .sort((a, b) => b.z_index - a.z_index)
-);
-
-export function resolveCategoryId(rawCategory: RawCategory): CategoryId | undefined {
+export function resolveCategory(rawCategory: RawCategory): Category | undefined {
   if (rawCategory.fixed_id) {
-    return OFFICIAL_FIXED_ID_MAPPINGS[rawCategory.fixed_id];
+    return FIXED_ID_CATEGORY_REGISTRY[rawCategory.fixed_id];
   }
 
   return;
