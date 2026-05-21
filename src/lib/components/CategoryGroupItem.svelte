@@ -13,7 +13,7 @@
   let isExpanded = $derived(forceExpanded || expanded);
 
   function isCategoryVisible(category: Category): boolean {
-    return categoryVisibilityState[category.category_id] !== false;
+    return categoryVisibilityState[category.fixed_id] !== false;
   }
 
   function isGroupChecked(): boolean {
@@ -33,7 +33,7 @@
     const visible = !isGroupChecked();
 
     for (const category of categories) {
-      categoryVisibilityState[category.category_id] = visible;
+      categoryVisibilityState[category.fixed_id] = visible;
     }
   }
 
@@ -78,7 +78,7 @@
 
   {#if isExpanded}
     <div id={`category-group-items-${group.category_group_id}`} class="category-group-items">
-      {#each categories as category (category.category_id)}
+      {#each categories as category (category.fixed_id)}
         <CategoryItem {category} />
       {/each}
     </div>

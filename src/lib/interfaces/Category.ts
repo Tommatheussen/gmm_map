@@ -1,5 +1,3 @@
-import type { CategoryId } from '$lib/data/Categories';
-
 interface CategoryFields {
   name: string;
   z_index: number;
@@ -28,15 +26,13 @@ export interface CategoryDefinition extends CategoryFields {
   group_id: CategoryGroupId;
 }
 
-export interface Category extends CategoryDefinition {
-  category_id: CategoryId;
-}
+export type Category = CategoryDefinition;
 
 export type CategoryGroupId = string;
 
 export interface CategoryGroup {
   name: string;
-  category_ids: readonly CategoryId[];
+  fixed_ids: readonly number[];
   category_group_id: CategoryGroupId;
 }
 

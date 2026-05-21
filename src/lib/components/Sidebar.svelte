@@ -8,7 +8,7 @@
   import { layerCache } from '$lib/data/LayerCache';
   import CategoryList from './CategoryList.svelte';
 
-  for (const fixedId of Object.keys(categoryVisibilityState)) {
+  for (const fixedId of Object.keys(categoryVisibilityState).map(Number)) {
     $effect(() => {
       const visible = categoryVisibilityState[fixedId];
       for (const layer of layerCache.cachedEntries) {

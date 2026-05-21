@@ -6,17 +6,15 @@
 
   type VisibleCategoryGroup = CategoryGroup & { categories: Category[] };
 
-  const groupedCategoryIds = new Set(
-    CATEGORY_GROUP_LIST.flatMap((group) => [...group.category_ids])
-  );
+  const groupedFixedIds = new Set(CATEGORY_GROUP_LIST.flatMap((group) => [...group.fixed_ids]));
 
   function matchesSearch(values: readonly string[], query: string): boolean {
     return values.some((value) => value.toLowerCase().includes(query));
   }
 
   function groupCategories(group: CategoryGroup): Category[] {
-    return group.category_ids
-      .map((categoryId) => CATEGORY_LIST.find((category) => category.category_id === categoryId))
+    return group.fixed_ids
+      .map((fixedId) => CATEGORY_LIST.find((category) => category.fixed_id === fixedId))
       .filter((category): category is Category => category !== undefined);
   }
 
@@ -40,7 +38,7 @@
 
   function filterFlatCategories(query: string): Category[] {
     return CATEGORY_LIST.filter((category) => {
-      if (groupedCategoryIds.has(category.category_id)) return false;
+      if (groupedFixedIds.has(category.fixed_id)) return false;
       if (!query) return true;
 
       return matchesSearch([category.name, ...(category.aliases ?? [])], query);
@@ -74,7 +72,7 @@
       />
     {/each}
 
-    {#each filteredCategories as category (category.category_id)}
+    {#each filteredCategories as category (category.fixed_id)}
       <CategoryItem {category} />
     {/each}
 
