@@ -56,7 +56,7 @@ export const CATEGORY_LIST: readonly Category[] = Object.freeze(
   ].sort((a, b) => b.z_index - a.z_index)
 );
 
-export const CATEGORY_GROUP_REGISTRY: Readonly<Record<CategoryGroupId, string>> = Object.freeze({
+const CATEGORY_GROUP_REGISTRY: Readonly<Record<CategoryGroupId, string>> = Object.freeze({
   food_drink: 'Food & Drink',
   festival: 'Festival',
   camping: 'Camping',

@@ -24,13 +24,11 @@ export interface CorrectedRawCategory extends RawCategory {
   fixed_id: number;
 }
 
-export interface CategoryDefinition extends CategoryFields {
+export interface Category extends CategoryFields {
   fixed_id: number;
   aliases?: readonly string[];
   group_id: CategoryGroupId;
 }
-
-export type Category = CategoryDefinition;
 
 export type CategoryGroupId = string;
 
