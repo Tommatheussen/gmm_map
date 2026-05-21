@@ -48,7 +48,6 @@ function validateCategory(category: RawCategory, year: string): void {
     return;
   }
 
-  console.log(year, latestYear, category.fixed_id);
   if (year !== latestYear || !category.fixed_id) {
     return;
   }
