@@ -48,7 +48,7 @@ class DataCache {
         name: category?.name ?? rawCategory.name,
         z_index: category?.z_index ?? rawCategory.z_index,
         color: category?.color ?? rawCategory.color,
-        ground_layer: category?.ground_layer ?? false,
+        group_id: category?.group_id,
         aliases: category?.aliases ?? []
       };
     });

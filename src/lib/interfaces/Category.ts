@@ -24,12 +24,20 @@ export interface RawCategory extends CategoryFields {
 
 export interface CategoryDefinition extends CategoryFields {
   fixed_id?: number;
-  ground_layer?: boolean;
   aliases?: readonly string[];
+  group_id?: CategoryGroupId;
 }
 
 export interface Category extends CategoryDefinition {
   category_id: CategoryId;
+}
+
+export type CategoryGroupId = string;
+
+export interface CategoryGroup {
+  name: string;
+  category_ids: readonly CategoryId[];
+  category_group_id: CategoryGroupId;
 }
 
 export interface YearCategory extends Category {
