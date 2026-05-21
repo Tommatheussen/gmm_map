@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'fs';
 import { join, resolve } from 'path';
 
 import { FIXED_ID_CATEGORY_REGISTRY, resolveCategory } from '../src/lib/data/Categories.ts';
-import { applyLayerOverrides } from '../src/lib/data/Overrides.ts';
+import { applyLayerOverrides, applyPoiOverrides } from '../src/lib/data/Overrides.ts';
 import {
   Category,
   CorrectedRawCategory,
@@ -311,8 +311,9 @@ for (const year of years) {
   const overrides = readOverrides(year);
   const overriddenLayerIds = validateLayerOverrides(categories, overrides, year);
   validatePoiOverrides(pois, categories, overrides, year);
-  validatePoiCoordinates(pois, year);
-  validatePoiCategories(pois, categories, year);
+  const correctedPois = applyPoiOverrides(pois, overrides);
+  validatePoiCoordinates(correctedPois, year);
+  validatePoiCategories(correctedPois, categories, year);
   const correctedCategories = applyLayerOverrides(categories, overrides);
 
   for (const category of correctedCategories) {

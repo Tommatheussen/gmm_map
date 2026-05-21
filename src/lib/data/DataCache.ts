@@ -6,7 +6,7 @@ import type {
 } from '$lib/interfaces/Category';
 import type { Poi } from '$lib/interfaces/Poi';
 import { resolveCategory } from './Categories';
-import { applyLayerOverrides } from './Overrides';
+import { applyLayerOverrides, applyPoiOverrides } from './Overrides';
 
 interface YearData {
   categories: YearCategory[];
@@ -27,7 +27,10 @@ class DataCache {
     ]);
 
     const categories = applyLayerOverrides(rawCategories, overrides) as CorrectedRawCategory[];
-    const yearData: YearData = { categories: this.convertCategories(categories), pois };
+    const yearData: YearData = {
+      categories: this.convertCategories(categories),
+      pois: applyPoiOverrides(pois, overrides)
+    };
     this.cache.set(year, yearData);
     return yearData;
   }
