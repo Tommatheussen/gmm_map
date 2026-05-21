@@ -1,4 +1,4 @@
-import { CATEGORY_REGISTRY, type CategoryId } from './Categories';
+import { CATEGORY_LIST } from './Categories';
 
 export const appState: {
   years: string[];
@@ -10,8 +10,8 @@ export const appState: {
   compareYear: null
 });
 
-export const categoryVisibilityState = $state<Record<string, boolean>>(
-  Object.fromEntries(Object.keys(CATEGORY_REGISTRY).map((id) => [id, true]))
+export const categoryVisibilityState = $state<Record<number, boolean>>(
+  Object.fromEntries(CATEGORY_LIST.map((category) => [category.fixed_id, true]))
 );
 
-export const categoryHighlightState = $state<{ highlight: CategoryId | null }>({ highlight: null });
+export const categoryHighlightState = $state<{ highlight: number | null }>({ highlight: null });

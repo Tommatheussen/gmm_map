@@ -1,6 +1,12 @@
-import type { YearCategory, RawCategory } from '$lib/interfaces/Category';
+import type {
+  CorrectedRawCategory,
+  DataOverrides,
+  RawCategory,
+  YearCategory
+} from '$lib/interfaces/Category';
 import type { Poi } from '$lib/interfaces/Poi';
-import { CATEGORY_REGISTRY, resolveCategoryId } from './Categories';
+import { resolveCategory } from './Categories';
+import { applyLayerOverrides } from './Overrides';
 
 interface YearData {
   categories: YearCategory[];
@@ -14,12 +20,14 @@ class DataCache {
   private async loadYear(year: string): Promise<YearData> {
     if (this.cache.has(year)) return this.cache.get(year)!;
 
-    const [rawCategories, pois] = await Promise.all([
+    const [rawCategories, pois, overrides] = await Promise.all([
       this.loadJSON<RawCategory[]>(`data/${year}/layers.json`),
-      this.loadJSON<Poi[]>(`data/${year}/pois.json`)
+      this.loadJSON<Poi[]>(`data/${year}/pois.json`),
+      this.loadOptionalJSON<DataOverrides>(`data/${year}/overrides.json`)
     ]);
 
-    const yearData: YearData = { categories: this.convertCategories(rawCategories, year), pois };
+    const categories = applyLayerOverrides(rawCategories, overrides) as CorrectedRawCategory[];
+    const yearData: YearData = { categories: this.convertCategories(categories), pois };
     this.cache.set(year, yearData);
     return yearData;
   }
@@ -30,26 +38,20 @@ class DataCache {
     return res.json();
   }
 
-  private convertCategories(rawCategories: RawCategory[], year: string): YearCategory[] {
-    return rawCategories.map((rawCategory) => {
-      const categoryId = resolveCategoryId(rawCategory, year);
-      const category = CATEGORY_REGISTRY[categoryId!];
+  private async loadOptionalJSON<T>(url: string): Promise<T | undefined> {
+    const res = await fetch(url);
+    if (res.status === 404) return;
+    if (!res.ok) throw new Error(`Failed to load ${url}: ${res.status}`);
+    return res.json();
+  }
 
-      if (!category) {
-        console.warn(
-          `Unified category not found for ${year}/${rawCategory.id}: ${rawCategory.name}`
-        );
-      }
+  private convertCategories(rawCategories: CorrectedRawCategory[]): YearCategory[] {
+    return rawCategories.map((rawCategory) => {
+      const category = resolveCategory(rawCategory)!;
 
       return {
-        id: rawCategory.id,
-        category_id: categoryId ?? 'unmapped',
-        fixed_id: category?.fixed_id ?? rawCategory.fixed_id,
-        name: category?.name ?? rawCategory.name,
-        z_index: category?.z_index ?? rawCategory.z_index,
-        color: category?.color ?? rawCategory.color,
-        group_id: category?.group_id,
-        aliases: category?.aliases ?? []
+        ...category,
+        id: rawCategory.id
       };
     });
   }

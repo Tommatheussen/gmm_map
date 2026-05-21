@@ -7,7 +7,7 @@
 
   let hoverTimeout: ReturnType<typeof setTimeout> | null = null;
   let isHovered = $state(false);
-  let isVisible = $derived(categoryVisibilityState[category.category_id] !== false);
+  let isVisible = $derived(categoryVisibilityState[category.fixed_id] !== false);
 
   function clearHoverTimeout(): void {
     if (hoverTimeout) {
@@ -19,7 +19,7 @@
   function clearHighlight(): void {
     clearHoverTimeout();
 
-    if (categoryHighlightState.highlight === category.category_id) {
+    if (categoryHighlightState.highlight === category.fixed_id) {
       categoryHighlightState.highlight = null;
     }
   }
@@ -30,7 +30,7 @@
     if (!isVisible) return;
 
     hoverTimeout = setTimeout(() => {
-      categoryHighlightState.highlight = category.category_id;
+      categoryHighlightState.highlight = category.fixed_id;
       hoverTimeout = null;
     }, 500);
   }
@@ -51,7 +51,7 @@
       return;
     }
 
-    if (isHovered && categoryHighlightState.highlight !== category.category_id) {
+    if (isHovered && categoryHighlightState.highlight !== category.fixed_id) {
       startHighlightTimer();
     }
   });
@@ -64,7 +64,7 @@
 <label class="category-item" onmouseenter={handleMouseEnter} onmouseleave={handleMouseLeave}>
   <input
     type="checkbox"
-    bind:checked={categoryVisibilityState[category.category_id]}
+    bind:checked={categoryVisibilityState[category.fixed_id]}
     autocomplete="off"
   />
   <span class="category-color" style:background={category.color}></span>
