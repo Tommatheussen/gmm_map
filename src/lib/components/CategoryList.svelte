@@ -67,7 +67,11 @@
 
   <div class="category-list">
     {#each filteredCategoryGroups as group (group.category_group_id)}
-      <CategoryGroupItem {group} categories={group.categories} />
+      <CategoryGroupItem
+        {group}
+        categories={group.categories}
+        forceExpanded={normalizedSearchQuery.length > 0}
+      />
     {/each}
 
     {#each filteredCategories as category (category.category_id)}
