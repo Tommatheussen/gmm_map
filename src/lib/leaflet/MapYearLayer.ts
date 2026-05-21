@@ -70,6 +70,10 @@ export class MapYearLayer {
     }
 
     for (const poi of this.pois) {
+      if (!poi.published) {
+        continue;
+      }
+
       if (poi.deleted_at) {
         console.debug(`POI was deleted: ${poi.id}`);
         continue;

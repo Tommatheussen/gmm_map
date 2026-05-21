@@ -10,6 +10,7 @@ import {
   LayerOverride,
   RawCategory
 } from '../src/lib/interfaces/Category.ts';
+import type { Poi, PoiOverride, PoiTag } from '../src/lib/interfaces/Poi.ts';
 
 const dataRoot = resolve('static');
 const yearsFile = join(dataRoot, 'years.json');
@@ -42,6 +43,37 @@ function isLayerOverride(value: unknown): value is LayerOverride {
   return keys.length === 1 && keys[0] === 'fixed_id' && typeof value.fixed_id === 'number';
 }
 
+function isPoiTag(value: unknown): value is PoiTag {
+  return (
+    isRecord(value) &&
+    typeof value.slug === 'string' &&
+    typeof value.name === 'string' &&
+    typeof value.category === 'string' &&
+    typeof value.priority === 'number' &&
+    typeof value.visible === 'boolean' &&
+    typeof value.filter === 'boolean' &&
+    typeof value.modified_at === 'string' &&
+    typeof value.color === 'string' &&
+    typeof value.text_color === 'string'
+  );
+}
+
+function isPoiOverride(value: unknown): value is PoiOverride {
+  if (!isRecord(value)) return false;
+
+  const allowedKeys = ['name', 'category_id', 'deleted_at', 'tags'];
+  for (const [key, field] of Object.entries(value)) {
+    if (!allowedKeys.includes(key)) return false;
+
+    if (key === 'name' && typeof field !== 'string') return false;
+    if (key === 'category_id' && typeof field !== 'number') return false;
+    if (key === 'deleted_at' && typeof field !== 'string' && field !== null) return false;
+    if (key === 'tags' && (!Array.isArray(field) || !field.every(isPoiTag))) return false;
+  }
+
+  return true;
+}
+
 function readOverrides(year: string): DataOverrides | undefined {
   const filePath = join(dataRoot, 'data', year, 'overrides.json');
   if (!existsSync(filePath)) return;
@@ -54,7 +86,7 @@ function readOverrides(year: string): DataOverrides | undefined {
     return;
   }
 
-  const allowedRootKeys = ['layers'];
+  const allowedRootKeys = ['layers', 'pois'];
   for (const key of Object.keys(parsed)) {
     if (!allowedRootKeys.includes(key)) {
       console.error(`❌ [${year}] overrides.json cannot contain root key "${key}"`);
@@ -64,6 +96,12 @@ function readOverrides(year: string): DataOverrides | undefined {
 
   if (parsed.layers !== undefined && !isRecord(parsed.layers)) {
     console.error(`❌ [${year}] overrides.layers must be an object keyed by layer ID`);
+    hasError = true;
+    return;
+  }
+
+  if (parsed.pois !== undefined && !isRecord(parsed.pois)) {
+    console.error('❌ [' + year + '] overrides.pois must be an object keyed by POI ID');
     hasError = true;
     return;
   }
@@ -81,7 +119,18 @@ function readOverrides(year: string): DataOverrides | undefined {
     layers[layerId] = override;
   }
 
-  return { layers };
+  const pois: Record<string, PoiOverride> = {};
+  for (const [poiId, override] of Object.entries(parsed.pois ?? {})) {
+    if (!isPoiOverride(override)) {
+      console.error('❌ [' + year + '] Override for POI ' + poiId + ' contains invalid fields');
+      hasError = true;
+      continue;
+    }
+
+    pois[poiId] = override;
+  }
+
+  return { layers, pois };
 }
 
 function validateLayerOverrides(
@@ -114,6 +163,72 @@ function validateLayerOverrides(
   }
 
   return overriddenLayerIds;
+}
+
+function validatePoiOverrides(
+  pois: Poi[],
+  categories: RawCategory[],
+  overrides: DataOverrides | undefined,
+  year: string
+): void {
+  if (!overrides?.pois) return;
+
+  const poisById = new Set(pois.map((poi) => poi.id));
+  const categoriesById = new Set(categories.map((category) => category.id));
+
+  for (const [poiId, override] of Object.entries(overrides.pois)) {
+    const numericPoiId = Number(poiId);
+
+    if (!Number.isInteger(numericPoiId) || !poisById.has(numericPoiId)) {
+      console.error('❌ [' + year + '] Override references unknown POI ID ' + poiId);
+      hasError = true;
+      continue;
+    }
+
+    if (override.category_id !== undefined && !categoriesById.has(override.category_id)) {
+      console.error(
+        '❌ [' +
+          year +
+          '] Override for POI ' +
+          poiId +
+          ' uses unknown layer ID ' +
+          override.category_id
+      );
+      hasError = true;
+    }
+  }
+}
+
+function validatePoiCoordinates(pois: Poi[], year: string): void {
+  for (const poi of pois) {
+    if (!poi.published || poi.deleted_at) continue;
+
+    if (!Array.isArray(poi.coordinates) || poi.coordinates.length === 0) {
+      console.error(`❌ [${year}] POI ${poi.name} (${poi.id}) has no coordinates`);
+      hasError = true;
+    }
+  }
+}
+
+function validatePoiCategories(pois: Poi[], categories: RawCategory[], year: string): void {
+  const categoriesById = new Set(categories.map((category) => category.id));
+
+  for (const poi of pois) {
+    if (!poi.published || poi.deleted_at) continue;
+
+    if (!poi.category_id) {
+      console.error(`❌ [${year}] POI ${poi.name} (${poi.id}) has no category_id`);
+      hasError = true;
+      continue;
+    }
+
+    if (!categoriesById.has(poi.category_id)) {
+      console.error(
+        `❌ [${year}] POI ${poi.name} (${poi.id}) uses unknown layer ID ${poi.category_id}`
+      );
+      hasError = true;
+    }
+  }
 }
 
 function isKnownCategoryName(category: RawCategory, definition: Category): boolean {
@@ -177,6 +292,7 @@ function validateCategory(
 
 for (const year of years) {
   const filePath = join(dataRoot, 'data', year, 'layers.json');
+  const poisFilePath = join(dataRoot, 'data', year, 'pois.json');
 
   if (!existsSync(filePath)) {
     console.error(`❌ Missing layers.json for ${year}`);
@@ -184,9 +300,19 @@ for (const year of years) {
     continue;
   }
 
+  if (!existsSync(poisFilePath)) {
+    console.error('❌ Missing pois.json for ' + year);
+    hasError = true;
+    continue;
+  }
+
   const categories: RawCategory[] = JSON.parse(readFileSync(filePath, 'utf-8'));
+  const pois: Poi[] = JSON.parse(readFileSync(poisFilePath, 'utf-8'));
   const overrides = readOverrides(year);
   const overriddenLayerIds = validateLayerOverrides(categories, overrides, year);
+  validatePoiOverrides(pois, categories, overrides, year);
+  validatePoiCoordinates(pois, year);
+  validatePoiCategories(pois, categories, year);
   const correctedCategories = applyLayerOverrides(categories, overrides);
 
   for (const category of correctedCategories) {
