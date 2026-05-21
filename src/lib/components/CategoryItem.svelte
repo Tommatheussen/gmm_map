@@ -6,12 +6,28 @@
   let { category }: { category: Category } = $props();
 
   let hoverTimeout: ReturnType<typeof setTimeout> | null = null;
+  let isHovered = $state(false);
+  let isVisible = $derived(categoryVisibilityState[category.category_id] !== false);
 
-  function handleMouseEnter() {
+  function clearHoverTimeout(): void {
     if (hoverTimeout) {
       clearTimeout(hoverTimeout);
       hoverTimeout = null;
     }
+  }
+
+  function clearHighlight(): void {
+    clearHoverTimeout();
+
+    if (categoryHighlightState.highlight === category.category_id) {
+      categoryHighlightState.highlight = null;
+    }
+  }
+
+  function startHighlightTimer(): void {
+    clearHoverTimeout();
+
+    if (!isVisible) return;
 
     hoverTimeout = setTimeout(() => {
       categoryHighlightState.highlight = category.category_id;
@@ -19,17 +35,29 @@
     }, 500);
   }
 
-  function handleMouseLeave() {
-    if (hoverTimeout) {
-      clearTimeout(hoverTimeout);
-      hoverTimeout = null;
-    }
-
-    categoryHighlightState.highlight = null;
+  function handleMouseEnter() {
+    isHovered = true;
+    startHighlightTimer();
   }
 
+  function handleMouseLeave() {
+    isHovered = false;
+    clearHighlight();
+  }
+
+  $effect(() => {
+    if (!isVisible) {
+      clearHighlight();
+      return;
+    }
+
+    if (isHovered && categoryHighlightState.highlight !== category.category_id) {
+      startHighlightTimer();
+    }
+  });
+
   onDestroy(() => {
-    if (hoverTimeout) clearTimeout(hoverTimeout);
+    clearHighlight();
   });
 </script>
 

@@ -7,9 +7,6 @@ export const CATEGORY_REGISTRY: Readonly<Record<string, CategoryDefinition>> = O
   partners: { color: '#8354CF', fixed_id: 4, name: 'Partners', z_index: 40 },
   stages: { color: '#580025', fixed_id: 5, name: 'Stages', z_index: 38 },
   camping_grounds: { color: '#016752', fixed_id: 6, group_id: 'camping', name: 'Camping Grounds', z_index: 7 },
-  festitent: { color: '#6b6342', group_id: 'camping', name: 'Festitent', z_index: 0 },
-  metal_town: { color: '#ffcc00', group_id: 'camping', name: 'Metal Town', z_index: 0 },
-  the_crypt: { color: '#ffcc00', group_id: 'camping', name: 'The Crypt', z_index: 0 },
   emergency_exits: { color: '#A32828', fixed_id: 7, name: 'Emergency Exits', z_index: 25 },
   water_fountains: { aliases: ['Free Tap Water'], color: '#57D7E7', fixed_id: 8, name: 'Water Fountains', z_index: 34 },
   first_aid: { color: '#FFFFFF', fixed_id: 9, name: 'First Aid', z_index: 36 },
@@ -47,12 +44,18 @@ export const CATEGORY_REGISTRY: Readonly<Record<string, CategoryDefinition>> = O
   foodcorner: { color: '#D0D5E5', fixed_id: 41, name: 'Foodcorner', z_index: 10 },
   tribune: { aliases: ['Tent Tribune'], color: '#7D767E', fixed_id: 42, name: 'Tribune', z_index: 9 },
   crosses: { color: '#000000', fixed_id: 43, name: 'Crosses', z_index: 11 },
-  light_green_camping_grounds: { aliases: ['Light Green Ground'], color: '#CADC8C', fixed_id: 44, ground_layer: true, name: 'Light Green Camping Grounds', z_index: 0 }
+  light_green_camping_grounds: { aliases: ['Light Green Ground'], color: '#CADC8C', fixed_id: 44, ground_layer: true, name: 'Light Green Camping Grounds', z_index: 0 },
+
+  // Without fixed_id here
+  festitent: { color: '#6b6342', group_id: 'camping', name: 'Festitent', z_index: 0 },
+  festihut: { color: '#6b6342', group_id: 'camping', name: 'Festihut', z_index: 0 },
+  metal_town: { color: '#ffcc00', group_id: 'camping', name: 'Metal Town', z_index: 0 },
+  the_crypt: { color: '#ffcc00', group_id: 'camping', name: 'The Crypt', z_index: 0 }
 });
 
 export type CategoryId = keyof typeof CATEGORY_REGISTRY;
 
-export const CATEGORY_GROUP_REGISTRY: Readonly<Record<CategoryGroupId, string>> = Object.freeze({ camping: 'Camping test grounds' });
+export const CATEGORY_GROUP_REGISTRY: Readonly<Record<CategoryGroupId, string>> = Object.freeze({ camping: 'Camping' });
 
 export const CATEGORY_GROUP_LIST = Object.freeze(
   Object.entries(CATEGORY_GROUP_REGISTRY).map<CategoryGroup>(([categoryGroupId, name]) => ({ category_group_id: categoryGroupId, name, category_ids: getCategoryGroupCategoryIds(categoryGroupId) }))
@@ -87,7 +90,7 @@ export const CATEGORY_LAYER_MAPPINGS: Readonly<Record<string, Record<number, Cat
   2022: { 2503: 'first_aid' },
   2023: { 6169: 'first_aid', 294910: 'metal_town' },
   2024: { 10560: 'festihut' },
-  2025: { 15487: 'festitent', 15492: 'camping_grounds' },
+  2025: { 15487: 'festitent', 15492: 'festihut' },
   // Temporary raw layer ID mapping until 2026 fixed_id values are available.
   2026: {
     252: 'food',
