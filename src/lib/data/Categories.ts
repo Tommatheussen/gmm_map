@@ -65,13 +65,7 @@ export const CATEGORY_GROUP_REGISTRY: Readonly<Record<CategoryGroupId, string>> 
   map_areas: 'Map Areas'
 });
 
-export const CATEGORY_GROUP_LIST = Object.freeze(
-  Object.entries(CATEGORY_GROUP_REGISTRY).map<CategoryGroup>(([categoryGroupId, name]) => ({ category_group_id: categoryGroupId, name, fixed_ids: getCategoryGroupFixedIds(categoryGroupId) }))
-);
-
-export function getCategoryGroupFixedIds(groupId: CategoryGroupId): readonly number[] {
-  return CATEGORY_LIST.filter((category) => category.group_id === groupId).map((category) => category.fixed_id);
-}
+export const CATEGORY_GROUP_LIST = Object.freeze(Object.entries(CATEGORY_GROUP_REGISTRY).map<CategoryGroup>(([categoryGroupId, name]) => ({ category_group_id: categoryGroupId, name })));
 
 export const FIXED_ID_CATEGORY_REGISTRY = Object.freeze(
   CATEGORY_LIST.reduce<Record<number, Category>>((mapping, category) => {

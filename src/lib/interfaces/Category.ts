@@ -36,7 +36,6 @@ export type CategoryGroupId = string;
 
 export interface CategoryGroup {
   name: string;
-  fixed_ids: readonly number[];
   category_group_id: CategoryGroupId;
 }
 

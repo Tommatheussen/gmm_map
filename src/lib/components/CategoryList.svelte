@@ -1,21 +1,16 @@
 <script lang="ts">
   import { CATEGORY_GROUP_LIST, CATEGORY_LIST } from '$lib/data/Categories';
-  import CategoryItem from '$lib/components/CategoryItem.svelte';
   import CategoryGroupItem from '$lib/components/CategoryGroupItem.svelte';
   import type { Category, CategoryGroup } from '$lib/interfaces/Category';
 
   type VisibleCategoryGroup = CategoryGroup & { categories: Category[] };
-
-  const groupedFixedIds = new Set(CATEGORY_GROUP_LIST.flatMap((group) => [...group.fixed_ids]));
 
   function matchesSearch(values: readonly string[], query: string): boolean {
     return values.some((value) => value.toLowerCase().includes(query));
   }
 
   function groupCategories(group: CategoryGroup): Category[] {
-    return group.fixed_ids
-      .map((fixedId) => CATEGORY_LIST.find((category) => category.fixed_id === fixedId))
-      .filter((category): category is Category => category !== undefined);
+    return CATEGORY_LIST.filter((category) => category.group_id === group.category_group_id);
   }
 
   function filterGroups(query: string): VisibleCategoryGroup[] {
@@ -36,22 +31,10 @@
     }).filter((group) => group.categories.length > 0);
   }
 
-  function filterFlatCategories(query: string): Category[] {
-    return CATEGORY_LIST.filter((category) => {
-      if (groupedFixedIds.has(category.fixed_id)) return false;
-      if (!query) return true;
-
-      return matchesSearch([category.name, ...(category.aliases ?? [])], query);
-    });
-  }
-
   let searchQuery = $state('');
   let normalizedSearchQuery = $derived(searchQuery.trim().toLowerCase());
   let filteredCategoryGroups = $derived(filterGroups(normalizedSearchQuery));
-  let filteredCategories = $derived(filterFlatCategories(normalizedSearchQuery));
-  let hasFilteredCategories = $derived(
-    filteredCategoryGroups.length > 0 || filteredCategories.length > 0
-  );
+  let hasFilteredCategories = $derived(filteredCategoryGroups.length > 0);
 </script>
 
 <div class="category-list-container">
@@ -70,10 +53,6 @@
         categories={group.categories}
         forceExpanded={normalizedSearchQuery.length > 0}
       />
-    {/each}
-
-    {#each filteredCategories as category (category.fixed_id)}
-      <CategoryItem {category} />
     {/each}
 
     {#if !hasFilteredCategories}
