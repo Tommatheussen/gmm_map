@@ -105,7 +105,9 @@ export const CATEGORY_LAYER_MAPPINGS: Readonly<Record<string, Record<number, Cat
     415: 'camping_grounds',
     416: 'lockers',
     417: 'camping_grounds',
-    418: 'camping_grounds'
+    418: 'camping_grounds',
+    487: 'lockers',
+    488: 'camping_grounds'
   }
 });
 
