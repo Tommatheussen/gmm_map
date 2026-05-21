@@ -1,17 +1,57 @@
 <script lang="ts">
-  import { CATEGORY_LIST } from '$lib/data/Categories';
+  import { CATEGORY_GROUP_LIST, CATEGORY_LIST } from '$lib/data/Categories';
   import CategoryItem from '$lib/components/CategoryItem.svelte';
+  import type { Category, CategoryGroup } from '$lib/interfaces/Category';
 
-  let searchQuery = $state('');
-  let filteredCategories = $derived(
-    CATEGORY_LIST.filter((cat) => {
-      const query = searchQuery.trim().toLowerCase();
+  type VisibleCategoryGroup = CategoryGroup & { categories: Category[] };
+
+  const groupedCategoryIds = new Set(
+    CATEGORY_GROUP_LIST.flatMap((group) => [...group.category_ids])
+  );
+
+  function matchesSearch(values: readonly string[], query: string): boolean {
+    return values.some((value) => value.toLowerCase().includes(query));
+  }
+
+  function groupCategories(group: CategoryGroup): Category[] {
+    return group.category_ids
+      .map((categoryId) => CATEGORY_LIST.find((category) => category.category_id === categoryId))
+      .filter((category): category is Category => category !== undefined);
+  }
+
+  function filterGroups(query: string): VisibleCategoryGroup[] {
+    return CATEGORY_GROUP_LIST.map((group) => {
+      const categories = groupCategories(group);
+      const groupMatches = matchesSearch([group.name, ...(group.aliases ?? [])], query);
+
+      if (!query || groupMatches) {
+        return { ...group, categories };
+      }
+
+      return {
+        ...group,
+        categories: categories.filter((category) =>
+          matchesSearch([category.name, ...(category.aliases ?? [])], query)
+        )
+      };
+    }).filter((group) => group.categories.length > 0);
+  }
+
+  function filterFlatCategories(query: string): Category[] {
+    return CATEGORY_LIST.filter((category) => {
+      if (groupedCategoryIds.has(category.category_id)) return false;
       if (!query) return true;
 
-      return [cat.name, ...(cat.aliases ?? [])].some((value) =>
-        value.toLowerCase().includes(query)
-      );
-    })
+      return matchesSearch([category.name, ...(category.aliases ?? [])], query);
+    });
+  }
+
+  let searchQuery = $state('');
+  let normalizedSearchQuery = $derived(searchQuery.trim().toLowerCase());
+  let filteredCategoryGroups = $derived(filterGroups(normalizedSearchQuery));
+  let filteredCategories = $derived(filterFlatCategories(normalizedSearchQuery));
+  let hasFilteredCategories = $derived(
+    filteredCategoryGroups.length > 0 || filteredCategories.length > 0
   );
 </script>
 
@@ -25,11 +65,26 @@
   />
 
   <div class="category-list">
+    {#each filteredCategoryGroups as group (group.category_group_id)}
+      <section class="category-group" aria-labelledby={`category-group-${group.category_group_id}`}>
+        <div id={`category-group-${group.category_group_id}`} class="category-group-header">
+          <span class="category-group-marker"></span>
+          <span class="category-group-name">{group.name}</span>
+        </div>
+
+        <div class="category-group-items">
+          {#each group.categories as category (category.category_id)}
+            <CategoryItem {category} />
+          {/each}
+        </div>
+      </section>
+    {/each}
+
     {#each filteredCategories as category (category.category_id)}
       <CategoryItem {category} />
     {/each}
 
-    {#if filteredCategories.length === 0}
+    {#if !hasFilteredCategories}
       <p class="category-empty">No categories found.</p>
     {/if}
   </div>
@@ -72,5 +127,43 @@
 
   .category-search:hover {
     border-color: #aaa;
+  }
+
+  .category-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .category-group-header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.6rem;
+    color: var(--title-color);
+    font-size: var(--label-size);
+    font-weight: 600;
+  }
+
+  .category-group-marker {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--title-color);
+    opacity: 0.65;
+  }
+
+  .category-group-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .category-group-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding-left: 0.85rem;
   }
 </style>
