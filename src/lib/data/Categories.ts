@@ -6,7 +6,10 @@ export const CATEGORY_REGISTRY: Readonly<Record<string, CategoryDefinition>> = O
   activities: { color: '#529CFF', fixed_id: 3, name: 'Activities', z_index: 41 },
   partners: { color: '#8354CF', fixed_id: 4, name: 'Partners', z_index: 40 },
   stages: { color: '#580025', fixed_id: 5, name: 'Stages', z_index: 38 },
-  camping_grounds: { color: '#016752', fixed_id: 6, name: 'Camping Grounds', z_index: 7 },
+  camping_grounds: { color: '#016752', fixed_id: 6, group_id: 'camping', name: 'Camping Grounds', z_index: 7 },
+  festitent: { color: '#6b6342', group_id: 'camping', name: 'Festitent', z_index: 0 },
+  metal_town: { color: '#ffcc00', group_id: 'camping', name: 'Metal Town', z_index: 0 },
+  the_crypt: { color: '#ffcc00', group_id: 'camping', name: 'The Crypt', z_index: 0 },
   emergency_exits: { color: '#A32828', fixed_id: 7, name: 'Emergency Exits', z_index: 25 },
   water_fountains: { aliases: ['Free Tap Water'], color: '#57D7E7', fixed_id: 8, name: 'Water Fountains', z_index: 34 },
   first_aid: { color: '#FFFFFF', fixed_id: 9, name: 'First Aid', z_index: 36 },
@@ -82,9 +85,9 @@ export const OFFICIAL_FIXED_ID_MAPPINGS = Object.freeze(
 export const CATEGORY_LAYER_MAPPINGS: Readonly<Record<string, Record<number, CategoryId>>> = Object.freeze<Record<number, Record<string, CategoryId>>>({
   // Sparse historical overrides for fixed IDs that were reused with a different meaning.
   2022: { 2503: 'first_aid' },
-  2023: { 6169: 'first_aid' },
-  2024: { 10560: 'camping_grounds' },
-  2025: { 15487: 'camping_grounds', 15492: 'camping_grounds' },
+  2023: { 6169: 'first_aid', 294910: 'metal_town' },
+  2024: { 10560: 'festihut' },
+  2025: { 15487: 'festitent', 15492: 'camping_grounds' },
   // Temporary raw layer ID mapping until 2026 fixed_id values are available.
   2026: {
     252: 'food',
@@ -121,13 +124,13 @@ export const CATEGORY_LAYER_MAPPINGS: Readonly<Record<string, Record<number, Cat
     283: 'lockers',
     284: 'wifi_zone',
     285: 'general',
-    414: 'camping_grounds',
-    415: 'camping_grounds',
+    414: 'camping_ground',
+    415: 'festitent',
     416: 'lockers',
     417: 'camping_grounds',
-    418: 'camping_grounds',
+    418: 'metal_town',
     487: 'lockers',
-    488: 'camping_grounds'
+    488: 'the_crypt'
   }
 });
 
