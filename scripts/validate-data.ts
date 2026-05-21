@@ -1,8 +1,15 @@
 import { existsSync, readFileSync } from 'fs';
 import { join, resolve } from 'path';
 
-import { CATEGORY_REGISTRY, resolveCategoryId } from '../src/lib/data/Categories.ts';
-import { CategoryDefinition, RawCategory } from '../src/lib/interfaces/Category.ts';
+import { FIXED_ID_CATEGORY_REGISTRY, resolveCategory } from '../src/lib/data/Categories.ts';
+import { applyLayerOverrides } from '../src/lib/data/Overrides.ts';
+import {
+  Category,
+  CorrectedRawCategory,
+  DataOverrides,
+  LayerOverride,
+  RawCategory
+} from '../src/lib/interfaces/Category.ts';
 
 const dataRoot = resolve('static');
 const yearsFile = join(dataRoot, 'years.json');
@@ -24,31 +31,125 @@ const IGNORED_CATEGORY_LAYERS: Readonly<Record<string, readonly number[]>> = Obj
 console.log(`🔍 Validating categories for years: ${years.join(', ')}`);
 console.log(`🔎 Latest year strict checks: ${latestYear}`);
 
-function isKnownCategoryName(category: RawCategory, definition: CategoryDefinition): boolean {
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function isLayerOverride(value: unknown): value is LayerOverride {
+  if (!isRecord(value)) return false;
+
+  const keys = Object.keys(value);
+  return keys.length === 1 && keys[0] === 'fixed_id' && typeof value.fixed_id === 'number';
+}
+
+function readOverrides(year: string): DataOverrides | undefined {
+  const filePath = join(dataRoot, 'data', year, 'overrides.json');
+  if (!existsSync(filePath)) return;
+
+  const parsed: unknown = JSON.parse(readFileSync(filePath, 'utf-8'));
+
+  if (!isRecord(parsed)) {
+    console.error(`❌ [${year}] overrides.json must be an object`);
+    hasError = true;
+    return;
+  }
+
+  const allowedRootKeys = ['layers'];
+  for (const key of Object.keys(parsed)) {
+    if (!allowedRootKeys.includes(key)) {
+      console.error(`❌ [${year}] overrides.json cannot contain root key "${key}"`);
+      hasError = true;
+    }
+  }
+
+  if (parsed.layers !== undefined && !isRecord(parsed.layers)) {
+    console.error(`❌ [${year}] overrides.layers must be an object keyed by layer ID`);
+    hasError = true;
+    return;
+  }
+
+  const layers: Record<string, LayerOverride> = {};
+  for (const [layerId, override] of Object.entries(parsed.layers ?? {})) {
+    if (!isLayerOverride(override)) {
+      console.error(
+        `❌ [${year}] Override for layer ${layerId} must contain only a numeric fixed_id`
+      );
+      hasError = true;
+      continue;
+    }
+
+    layers[layerId] = override;
+  }
+
+  return { layers };
+}
+
+function validateLayerOverrides(
+  categories: RawCategory[],
+  overrides: DataOverrides | undefined,
+  year: string
+): Set<number> {
+  const overriddenLayerIds = new Set<number>();
+  if (!overrides?.layers) return overriddenLayerIds;
+
+  const categoriesById = new Set(categories.map((category) => category.id));
+
+  for (const [layerId, override] of Object.entries(overrides.layers)) {
+    const numericLayerId = Number(layerId);
+
+    if (!Number.isInteger(numericLayerId) || !categoriesById.has(numericLayerId)) {
+      console.error(`❌ [${year}] Override references unknown layer ID ${layerId}`);
+      hasError = true;
+      continue;
+    }
+
+    if (!FIXED_ID_CATEGORY_REGISTRY[override.fixed_id]) {
+      console.error(
+        `❌ [${year}] Override for layer ${layerId} uses unknown fixed_id ${override.fixed_id}`
+      );
+      hasError = true;
+    }
+
+    overriddenLayerIds.add(numericLayerId);
+  }
+
+  return overriddenLayerIds;
+}
+
+function isKnownCategoryName(category: RawCategory, definition: Category): boolean {
   return definition.name === category.name || definition.aliases?.includes(category.name) === true;
 }
 
-function validateCategory(category: RawCategory, year: string): void {
+function hasFixedId(category: RawCategory): category is CorrectedRawCategory {
+  return Boolean(category.fixed_id);
+}
+
+function validateCategory(
+  category: RawCategory,
+  year: string,
+  overriddenLayerIds: ReadonlySet<number>
+): void {
   if (IGNORED_CATEGORY_LAYERS[year]?.includes(category.id)) {
     return;
   }
 
-  const categoryId = resolveCategoryId(category, year);
-  const known: CategoryDefinition | undefined = categoryId
-    ? CATEGORY_REGISTRY[categoryId]
-    : undefined;
+  if (!hasFixedId(category)) {
+    console.error(`❌ [${year}] Category ${category.name} (${category.id}) has no fixed_id`);
+    hasError = true;
+    return;
+  }
 
-  if (!categoryId || !known) {
+  const known: Category | undefined = resolveCategory(category);
+
+  if (!known) {
     console.error(
-      `❌ [${year}] Unmapped category ${category.name} (${category.id})${
-        category.fixed_id ? ` with fixed_id ${category.fixed_id}` : ''
-      }`
+      `❌ [${year}] Unmapped category ${category.name} (${category.id}) with fixed_id ${category.fixed_id}`
     );
     hasError = true;
     return;
   }
 
-  if (year !== latestYear || !category.fixed_id) {
+  if (year !== latestYear || overriddenLayerIds.has(category.id)) {
     return;
   }
 
@@ -84,9 +185,12 @@ for (const year of years) {
   }
 
   const categories: RawCategory[] = JSON.parse(readFileSync(filePath, 'utf-8'));
+  const overrides = readOverrides(year);
+  const overriddenLayerIds = validateLayerOverrides(categories, overrides, year);
+  const correctedCategories = applyLayerOverrides(categories, overrides);
 
-  for (const category of categories) {
-    validateCategory(category, year);
+  for (const category of correctedCategories) {
+    validateCategory(category, year, overriddenLayerIds);
   }
 }
 

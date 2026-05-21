@@ -6,6 +6,7 @@ import type {
 } from '$lib/interfaces/Category';
 import type { Poi } from '$lib/interfaces/Poi';
 import { resolveCategory } from './Categories';
+import { applyLayerOverrides } from './Overrides';
 
 interface YearData {
   categories: YearCategory[];
@@ -25,7 +26,7 @@ class DataCache {
       this.loadOptionalJSON<DataOverrides>(`data/${year}/overrides.json`)
     ]);
 
-    const categories = this.applyLayerOverrides(rawCategories, overrides);
+    const categories = applyLayerOverrides(rawCategories, overrides) as CorrectedRawCategory[];
     const yearData: YearData = { categories: this.convertCategories(categories), pois };
     this.cache.set(year, yearData);
     return yearData;
@@ -42,21 +43,6 @@ class DataCache {
     if (res.status === 404) return;
     if (!res.ok) throw new Error(`Failed to load ${url}: ${res.status}`);
     return res.json();
-  }
-
-  private applyLayerOverrides(
-    rawCategories: RawCategory[],
-    overrides: DataOverrides | undefined
-  ): CorrectedRawCategory[] {
-    if (!overrides?.layers) return rawCategories as CorrectedRawCategory[];
-
-    return rawCategories.map(
-      (rawCategory) =>
-        ({
-          ...rawCategory,
-          ...overrides.layers?.[rawCategory.id]
-        }) as CorrectedRawCategory
-    );
   }
 
   private convertCategories(rawCategories: CorrectedRawCategory[]): YearCategory[] {
