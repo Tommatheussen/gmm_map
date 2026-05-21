@@ -32,6 +32,18 @@ export interface Category extends CategoryDefinition {
   category_id: CategoryId;
 }
 
+export type CategoryGroupId = string;
+
+export interface CategoryGroupDefinition {
+  name: string;
+  category_ids: readonly CategoryId[];
+  aliases?: readonly string[];
+}
+
+export interface CategoryGroup extends CategoryGroupDefinition {
+  category_group_id: CategoryGroupId;
+}
+
 export interface YearCategory extends Category {
   id: number; // The original category ID from the year's data, preserved for mapping POIs.
 }

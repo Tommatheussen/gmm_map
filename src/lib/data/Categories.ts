@@ -1,4 +1,4 @@
-import { type Category, type CategoryDefinition, type RawCategory } from '$lib/interfaces/Category';
+import { type Category, type CategoryDefinition, type CategoryGroup, type CategoryGroupDefinition, type CategoryGroupId, type RawCategory } from '$lib/interfaces/Category';
 
 export const CATEGORY_REGISTRY: Readonly<Record<string, CategoryDefinition>> = Object.freeze<Record<CategoryId, CategoryDefinition>>({
   food: { color: '#D7B456', fixed_id: 1, name: 'Food', z_index: 43 },
@@ -48,6 +48,18 @@ export const CATEGORY_REGISTRY: Readonly<Record<string, CategoryDefinition>> = O
 });
 
 export type CategoryId = keyof typeof CATEGORY_REGISTRY;
+
+export const CATEGORY_GROUP_REGISTRY: Readonly<Record<CategoryGroupId, CategoryGroupDefinition>> = Object.freeze({ camping: { name: 'Camping grounds', category_ids: ['camping_grounds'] } });
+
+export const CATEGORY_GROUP_LIST = Object.freeze(Object.entries(CATEGORY_GROUP_REGISTRY).map<CategoryGroup>(([categoryGroupId, data]) => ({ category_group_id: categoryGroupId, ...data })));
+
+export function getCategoryGroupForCategory(categoryId: CategoryId): CategoryGroup | undefined {
+  return CATEGORY_GROUP_LIST.find((group) => group.category_ids.includes(categoryId));
+}
+
+export function getCategoryGroupCategoryIds(groupId: CategoryGroupId): readonly CategoryId[] {
+  return CATEGORY_GROUP_REGISTRY[groupId]?.category_ids ?? [];
+}
 
 export const OFFICIAL_FIXED_ID_MAPPINGS = Object.freeze(
   Object.entries(CATEGORY_REGISTRY).reduce<Record<number, CategoryId>>((mapping, [categoryId, category]) => {
