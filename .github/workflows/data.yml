@@ -1,6 +1,8 @@
 name: Validate latest data
 
 on:
+  push:
+  pull_request:
   workflow_call:
   workflow_dispatch:
 
