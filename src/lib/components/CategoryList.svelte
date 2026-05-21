@@ -23,7 +23,7 @@
   function filterGroups(query: string): VisibleCategoryGroup[] {
     return CATEGORY_GROUP_LIST.map((group) => {
       const categories = groupCategories(group);
-      const groupMatches = matchesSearch([group.name, ...(group.aliases ?? [])], query);
+      const groupMatches = matchesSearch([group.name], query);
 
       if (!query || groupMatches) {
         return { ...group, categories };

@@ -26,6 +26,7 @@ export interface CategoryDefinition extends CategoryFields {
   fixed_id?: number;
   ground_layer?: boolean;
   aliases?: readonly string[];
+  group_id?: CategoryGroupId;
 }
 
 export interface Category extends CategoryDefinition {
@@ -34,13 +35,9 @@ export interface Category extends CategoryDefinition {
 
 export type CategoryGroupId = string;
 
-export interface CategoryGroupDefinition {
+export interface CategoryGroup {
   name: string;
   category_ids: readonly CategoryId[];
-  aliases?: readonly string[];
-}
-
-export interface CategoryGroup extends CategoryGroupDefinition {
   category_group_id: CategoryGroupId;
 }
 
