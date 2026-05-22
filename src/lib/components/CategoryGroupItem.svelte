@@ -7,7 +7,7 @@
   let { group, forceExpanded = false }: { group: CategoryGroupTree; forceExpanded?: boolean } =
     $props();
 
-  let expanded = $state(true);
+  let expanded = $state(false);
   let isExpanded = $derived(forceExpanded || expanded);
   let visibleCategories = $derived(allCategories(group));
 
@@ -17,6 +17,21 @@
       ...categoryGroup.groups.flatMap((childGroup) => allCategories(childGroup))
     ];
   }
+
+  function onlyCategory(categoryGroup: CategoryGroupTree): Category | undefined {
+    const categories = allCategories(categoryGroup);
+
+    return categories.length === 1 ? categories[0] : undefined;
+  }
+
+  let childGroups = $derived(group.groups.filter((childGroup) => !onlyCategory(childGroup)));
+  let childCategories = $derived(
+    group.groups.flatMap((childGroup) => {
+      const category = onlyCategory(childGroup);
+
+      return category ? [category] : [];
+    })
+  );
 
   function isCategoryVisible(category: Category): boolean {
     return categoryVisibilityState[category.fixed_id] !== false;
@@ -84,11 +99,14 @@
 
   {#if isExpanded}
     <div id={`category-group-items-${group.category_group_id}`} class="category-group-items">
+      {#each childGroups as childGroup (childGroup.category_group_id)}
+        <CategoryGroupItem group={childGroup} {forceExpanded} />
+      {/each}
       {#each group.categories as category (category.fixed_id)}
         <CategoryItem {category} />
       {/each}
-      {#each group.groups as childGroup (childGroup.category_group_id)}
-        <CategoryGroupItem group={childGroup} {forceExpanded} />
+      {#each childCategories as category (category.fixed_id)}
+        <CategoryItem {category} />
       {/each}
     </div>
   {/if}
