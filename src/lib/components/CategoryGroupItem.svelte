@@ -8,8 +8,14 @@
     $props();
 
   let expanded = $state(false);
-  let isExpanded = $derived(forceExpanded || expanded);
+  let isExpanded = $derived(expanded);
   let visibleCategories = $derived(allCategories(group));
+
+  $effect(() => {
+    if (forceExpanded) {
+      expanded = true;
+    }
+  });
 
   function allCategories(categoryGroup: CategoryGroupTree): Category[] {
     return [
