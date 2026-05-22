@@ -1,7 +1,12 @@
 import { existsSync, readFileSync } from 'fs';
 import { join, resolve } from 'path';
 
-import { FIXED_ID_CATEGORY_REGISTRY, resolveCategory } from '../src/lib/data/Categories.ts';
+import {
+  CATEGORY_GROUP_LIST,
+  CATEGORY_LIST,
+  FIXED_ID_CATEGORY_REGISTRY,
+  resolveCategory
+} from '../src/lib/data/Categories.ts';
 import { applyLayerOverrides, applyPoiOverrides } from '../src/lib/data/Overrides.ts';
 import {
   Category,
@@ -260,6 +265,54 @@ function hasFixedId(category: RawCategory): category is CorrectedRawCategory {
   return Boolean(category.fixed_id);
 }
 
+function validateCategoryGroups(): void {
+  const groupsById = new Map(
+    CATEGORY_GROUP_LIST.map((group) => [group.category_group_id, group] as const)
+  );
+
+  if (groupsById.size !== CATEGORY_GROUP_LIST.length) {
+    console.error('❌ Category groups cannot reuse category_group_id values');
+    hasError = true;
+  }
+
+  for (const category of CATEGORY_LIST) {
+    if (!groupsById.has(category.group_id)) {
+      console.error(
+        `❌ Category ${category.name} (${category.fixed_id}) uses unknown group ID ${category.group_id}`
+      );
+      hasError = true;
+    }
+  }
+
+  for (const group of CATEGORY_GROUP_LIST) {
+    const visitedGroupIds = new Set<string>([group.category_group_id]);
+    let parentGroupId = group.parent_group_id;
+
+    while (parentGroupId) {
+      const parentGroup = groupsById.get(parentGroupId);
+
+      if (!parentGroup) {
+        console.error(
+          `❌ Category group ${group.name} (${group.category_group_id}) uses unknown parent group ID ${parentGroupId}`
+        );
+        hasError = true;
+        break;
+      }
+
+      if (visitedGroupIds.has(parentGroupId)) {
+        console.error(
+          `❌ Category group ${group.name} (${group.category_group_id}) has a recursive parent group cycle at ${parentGroupId}`
+        );
+        hasError = true;
+        break;
+      }
+
+      visitedGroupIds.add(parentGroupId);
+      parentGroupId = parentGroup.parent_group_id;
+    }
+  }
+}
+
 function validateCategory(
   category: RawCategory,
   year: string,
@@ -310,6 +363,8 @@ function validateCategory(
     hasError = true;
   }
 }
+
+validateCategoryGroups();
 
 for (const year of years) {
   const filePath = join(dataRoot, 'data', year, 'layers.json');
