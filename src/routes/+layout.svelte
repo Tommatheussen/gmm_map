@@ -1,5 +1,8 @@
 <script lang="ts">
   import { APP_TITLE, APP_DESCRIPTION } from '$lib/Config';
+  import { replaceState } from '$app/navigation';
+  import { page } from '$app/state';
+  import { resolve } from '$app/paths';
   import { onMount } from 'svelte';
   import Header from '$lib/components/Header.svelte';
   import Footer from '$lib/components/Footer.svelte';
@@ -13,6 +16,21 @@
     return data;
   }
 
+  function getYearRoute(): URL | null {
+    if (!appState.baseYear) return null;
+
+    const url = new URL(page.url);
+    url.searchParams.set('year', appState.baseYear);
+
+    if (appState.compareYear && appState.compareYear !== appState.baseYear) {
+      url.searchParams.set('compare', appState.compareYear);
+    } else {
+      url.searchParams.delete('compare');
+    }
+
+    return url;
+  }
+
   onMount(async () => {
     try {
       const data = await loadYears();
@@ -23,6 +41,14 @@
     } catch (err) {
       console.error('Failed to load years.json', err);
     }
+  });
+
+  $effect(() => {
+    const url = getYearRoute();
+    if (!url || url.href === page.url.href) return;
+
+    const route = resolve(`/?${url.searchParams.toString()}${url.hash}`);
+    replaceState(route, page.state);
   });
   let { children } = $props();
 </script>
