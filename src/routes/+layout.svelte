@@ -16,6 +16,18 @@
     return data;
   }
 
+  function getAvailableYear(year: string | null): string | null {
+    return year && appState.years.includes(year) ? year : null;
+  }
+
+  function applyRouteYears() {
+    const baseYear = getAvailableYear(page.url.searchParams.get('year')) ?? appState.years[0];
+    const compareYear = getAvailableYear(page.url.searchParams.get('compare'));
+
+    appState.baseYear = baseYear;
+    appState.compareYear = compareYear === baseYear ? null : compareYear;
+  }
+
   function getYearRoute(): URL | null {
     if (!appState.baseYear) return null;
 
@@ -37,7 +49,7 @@
       const availableYears = Object.keys(data).sort().reverse();
 
       appState.years.push(...availableYears);
-      appState.baseYear = availableYears[0];
+      applyRouteYears();
     } catch (err) {
       console.error('Failed to load years.json', err);
     }
