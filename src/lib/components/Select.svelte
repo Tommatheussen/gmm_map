@@ -2,8 +2,8 @@
   import { appState } from '$lib/data/State.svelte';
   import { onMount } from 'svelte';
 
-  let { value = $bindable(), clearOption = false, placeholder } = $props();
-  let options = appState.years;
+  let { value = $bindable(), clearOption = false, exclude = null, placeholder } = $props();
+  let options = $derived(appState.years.filter((year) => year !== exclude));
 
   let open = $state(false);
   let selectEl: HTMLDivElement;

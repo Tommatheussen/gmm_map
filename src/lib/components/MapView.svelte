@@ -42,6 +42,12 @@
       baseLayer.remove();
     }
 
+    if (compareLayer?.year === appState.baseYear) {
+      baseLayer = compareLayer;
+      splitControl.setBaseLayer(baseLayer);
+      return;
+    }
+
     layerCache.getYearLayer(map, appState.baseYear).then((layer) => {
       baseLayer = layer;
 
@@ -51,13 +57,14 @@
 
   function _handleCompareLayer() {
     // Compare layer handling
-    if (appState.baseYear === appState.compareYear) return;
+    const compareYear = appState.baseYear === appState.compareYear ? null : appState.compareYear;
 
-    if (compareLayer && map.hasLayer(compareLayer.rootGroup)) {
+    if (compareLayer && compareLayer !== baseLayer && map.hasLayer(compareLayer.rootGroup)) {
       compareLayer.remove();
     }
+    compareLayer = null;
 
-    if (!appState.compareYear) {
+    if (!compareYear) {
       splitControl.remove();
       return;
     }
@@ -66,7 +73,7 @@
       splitControl.addTo(map);
     }
 
-    layerCache.getYearLayer(map, appState.compareYear).then((layer) => {
+    layerCache.getYearLayer(map, compareYear).then((layer) => {
       compareLayer = layer;
 
       splitControl.setCompareLayer(compareLayer);

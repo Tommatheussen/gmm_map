@@ -35,7 +35,12 @@
 
   <fieldset>
     <legend>🔀 Compare</legend>
-    <Select bind:value={appState.compareYear} placeholder="Select comparison year" clearOption />
+    <Select
+      bind:value={appState.compareYear}
+      placeholder="Select comparison year"
+      clearOption
+      exclude={appState.baseYear}
+    />
     <p class="info-text">
       Optionally select another year to compare with the base year. If no year is selected, only the
       base year will be visible.
