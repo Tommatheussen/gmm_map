@@ -1,4 +1,5 @@
 import { type Category, type CategoryGroup, type CategoryGroupId, type CorrectedRawCategory } from '$lib/interfaces/Category';
+import type { CategorySubgroup, CategorySubgroupId } from '$lib/interfaces/Category';
 
 // App-owned fixed IDs start at 10000 to avoid collisions with official GMM fixed_id values.
 export const CATEGORY_LIST: readonly Category[] = Object.freeze(
@@ -66,6 +67,17 @@ const CATEGORY_GROUP_REGISTRY: Readonly<Record<CategoryGroupId, string>> = Objec
 });
 
 export const CATEGORY_GROUP_LIST = Object.freeze(Object.entries(CATEGORY_GROUP_REGISTRY).map<CategoryGroup>(([categoryGroupId, name]) => ({ category_group_id: categoryGroupId, name })));
+
+const CATEGORY_SUBGROUP_REGISTRY: Readonly<Record<CategorySubgroupId, Omit<CategorySubgroup, 'category_subgroup_id'>>> = Object.freeze({
+  camping_boneyard: { category_group_id: 'camping', name: 'Boneyard' },
+  camping_inferno: { category_group_id: 'camping', name: 'Inferno' },
+  camping_metal_town: { category_group_id: 'camping', name: 'Metal Town' },
+  camping_the_crypt: { category_group_id: 'camping', name: 'The Crypt' }
+});
+
+export const CATEGORY_SUBGROUP_LIST = Object.freeze(
+  Object.entries(CATEGORY_SUBGROUP_REGISTRY).map<CategorySubgroup>(([categorySubgroupId, subgroup]) => ({ ...subgroup, category_subgroup_id: categorySubgroupId }))
+);
 
 export const FIXED_ID_CATEGORY_REGISTRY = Object.freeze(
   CATEGORY_LIST.reduce<Record<number, Category>>((mapping, category) => {
