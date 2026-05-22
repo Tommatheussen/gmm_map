@@ -61,12 +61,13 @@ function isPoiTag(value: unknown): value is PoiTag {
 function isPoiOverride(value: unknown): value is PoiOverride {
   if (!isRecord(value)) return false;
 
-  const allowedKeys = ['name', 'category_id', 'deleted_at', 'tags'];
+  const allowedKeys = ['name', 'category_id', 'category_fixed_id', 'deleted_at', 'tags'];
   for (const [key, field] of Object.entries(value)) {
     if (!allowedKeys.includes(key)) return false;
 
     if (key === 'name' && typeof field !== 'string') return false;
     if (key === 'category_id' && typeof field !== 'number') return false;
+    if (key === 'category_fixed_id' && typeof field !== 'number') return false;
     if (key === 'deleted_at' && typeof field !== 'string' && field !== null) return false;
     if (key === 'tags' && (!Array.isArray(field) || !field.every(isPoiTag))) return false;
   }
@@ -196,6 +197,15 @@ function validatePoiOverrides(
       );
       hasError = true;
     }
+    if (
+      override.category_fixed_id !== undefined &&
+      !FIXED_ID_CATEGORY_REGISTRY[override.category_fixed_id]
+    ) {
+      console.error(
+        `❌ [${year}] Override for POI ${poiId} uses unknown category_fixed_id ${override.category_fixed_id}`
+      );
+      hasError = true;
+    }
   }
 }
 
@@ -215,6 +225,17 @@ function validatePoiCategories(pois: Poi[], categories: RawCategory[], year: str
 
   for (const poi of pois) {
     if (!poi.published || poi.deleted_at) continue;
+
+    if (poi.category_fixed_id !== undefined) {
+      if (!FIXED_ID_CATEGORY_REGISTRY[poi.category_fixed_id]) {
+        console.error(
+          `❌ [${year}] POI ${poi.name} (${poi.id}) uses unknown category_fixed_id ${poi.category_fixed_id}`
+        );
+        hasError = true;
+      }
+
+      continue;
+    }
 
     if (!poi.category_id) {
       console.error(`❌ [${year}] POI ${poi.name} (${poi.id}) has no category_id`);

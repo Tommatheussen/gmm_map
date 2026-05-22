@@ -1,7 +1,8 @@
 import '$lib/leaflet/MapYearLayer.css';
 
+import { FIXED_ID_CATEGORY_REGISTRY } from '$lib/data/Categories';
 import { dataCache } from '$lib/data/DataCache';
-import type { YearCategory } from '$lib/interfaces/Category';
+import type { Category, YearCategory } from '$lib/interfaces/Category';
 
 import { FeatureGroup, LayerGroup, type Map as LeafletMap, Polygon } from 'leaflet';
 
@@ -43,8 +44,8 @@ export class MapYearLayer {
     this._buildLayers();
   }
 
-  private _ensureMapPaneExists(category: YearCategory) {
-    const paneName = `year-${this.year}-cat-${category.id}`;
+  private _ensureMapPaneExists(category: Category) {
+    const paneName = `year-${this.year}-fixed-cat-${category.fixed_id}`;
     if (this.map.getPane(paneName) == undefined) {
       const pane = this.map.createPane(paneName);
       pane.dataset.year = this.year.toString();
@@ -57,16 +58,7 @@ export class MapYearLayer {
     this.categoryLayers.clear();
 
     for (const cat of this.categories) {
-      this._ensureMapPaneExists(cat);
-
-      if (!this.categoryLayers.has(cat.fixed_id)) {
-        const group = new FeatureGroup<Polygon>();
-        this.categoryLayers.set(cat.fixed_id, group);
-
-        if (categoryVisibilityState[cat.fixed_id] !== false) {
-          this.rootGroup.addLayer(group);
-        }
-      }
+      this._ensureCategoryGroup(cat);
     }
 
     for (const poi of this.pois) {
@@ -79,17 +71,21 @@ export class MapYearLayer {
         continue;
       }
 
-      if (!poi.category_id) {
+      const cat =
+        poi.category_fixed_id !== undefined
+          ? FIXED_ID_CATEGORY_REGISTRY[poi.category_fixed_id]
+          : this.categories.find((category) => category.id === poi.category_id);
+
+      if (!cat && !poi.category_id) {
         console.debug(`POI has no category: ${poi.id}`);
         continue;
       }
-
-      const cat = this.categories.find((category) => category.id === poi.category_id);
       if (!cat) {
         console.warn(`Map layer not found for POI: ${poi.name} (${poi.id})`);
         continue;
       }
 
+      this._ensureCategoryGroup(cat);
       const group = this.getCategoryGroup(cat.fixed_id);
       if (!group) {
         console.error(
@@ -118,13 +114,26 @@ export class MapYearLayer {
           fillColor: cat.color,
           fillOpacity: dev ? 0.75 : 1,
           weight: 1,
-          pane: `year-${this.year}-cat-${cat.id}`
+          pane: `year-${this.year}-fixed-cat-${cat.fixed_id}`
         });
         polygon.bindPopup(popupData);
         group.addLayer(polygon);
       } else {
         console.warn(`POI type not implemented! ${poi.name} (${poi.id})`);
       }
+    }
+  }
+
+  private _ensureCategoryGroup(category: Category) {
+    this._ensureMapPaneExists(category);
+
+    if (this.categoryLayers.has(category.fixed_id)) return;
+
+    const group = new FeatureGroup<Polygon>();
+    this.categoryLayers.set(category.fixed_id, group);
+
+    if (categoryVisibilityState[category.fixed_id] !== false) {
+      this.rootGroup.addLayer(group);
     }
   }
 
