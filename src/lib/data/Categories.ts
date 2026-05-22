@@ -1,5 +1,4 @@
 import { type Category, type CategoryGroup, type CategoryGroupId, type CorrectedRawCategory } from '$lib/interfaces/Category';
-import type { CategorySubgroup, CategorySubgroupId } from '$lib/interfaces/Category';
 
 // App-owned fixed IDs start at 10000 to avoid collisions with official GMM fixed_id values.
 export const CATEGORY_LIST: readonly Category[] = Object.freeze(
@@ -57,27 +56,20 @@ export const CATEGORY_LIST: readonly Category[] = Object.freeze(
   ].sort((a, b) => b.z_index - a.z_index)
 );
 
-const CATEGORY_GROUP_REGISTRY: Readonly<Record<CategoryGroupId, string>> = Object.freeze({
-  food_drink: 'Food & Drink',
-  festival: 'Festival',
-  camping: 'Camping',
-  travel_access: 'Travel & Access',
-  other: 'Other',
-  map_areas: 'Map Areas'
+const CATEGORY_GROUP_REGISTRY: Readonly<Record<CategoryGroupId, Omit<CategoryGroup, 'category_group_id'>>> = Object.freeze({
+  food_drink: { name: 'Food & Drink' },
+  festival: { name: 'Festival' },
+  camping: { name: 'Camping' },
+  camping_boneyard: { name: 'Boneyard', parent_group_id: 'camping' },
+  camping_inferno: { name: 'Inferno', parent_group_id: 'camping' },
+  camping_metal_town: { name: 'Metal Town', parent_group_id: 'camping' },
+  camping_the_crypt: { name: 'The Crypt', parent_group_id: 'camping' },
+  travel_access: { name: 'Travel & Access' },
+  other: { name: 'Other' },
+  map_areas: { name: 'Map Areas' }
 });
 
-export const CATEGORY_GROUP_LIST = Object.freeze(Object.entries(CATEGORY_GROUP_REGISTRY).map<CategoryGroup>(([categoryGroupId, name]) => ({ category_group_id: categoryGroupId, name })));
-
-const CATEGORY_SUBGROUP_REGISTRY: Readonly<Record<CategorySubgroupId, Omit<CategorySubgroup, 'category_subgroup_id'>>> = Object.freeze({
-  camping_boneyard: { category_group_id: 'camping', name: 'Boneyard' },
-  camping_inferno: { category_group_id: 'camping', name: 'Inferno' },
-  camping_metal_town: { category_group_id: 'camping', name: 'Metal Town' },
-  camping_the_crypt: { category_group_id: 'camping', name: 'The Crypt' }
-});
-
-export const CATEGORY_SUBGROUP_LIST = Object.freeze(
-  Object.entries(CATEGORY_SUBGROUP_REGISTRY).map<CategorySubgroup>(([categorySubgroupId, subgroup]) => ({ ...subgroup, category_subgroup_id: categorySubgroupId }))
-);
+export const CATEGORY_GROUP_LIST = Object.freeze(Object.entries(CATEGORY_GROUP_REGISTRY).map<CategoryGroup>(([categoryGroupId, group]) => ({ ...group, category_group_id: categoryGroupId })));
 
 export const FIXED_ID_CATEGORY_REGISTRY = Object.freeze(
   CATEGORY_LIST.reduce<Record<number, Category>>((mapping, category) => {
