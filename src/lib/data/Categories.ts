@@ -8,7 +8,7 @@ export const CATEGORY_LIST: readonly Category[] = Object.freeze(
     { color: '#529CFF', fixed_id: 3, group_id: 'festival', name: 'Activities', z_index: 41 },
     { color: '#8354CF', fixed_id: 4, group_id: 'festival', name: 'Partners', z_index: 40 },
     { color: '#580025', fixed_id: 5, group_id: 'festival', name: 'Stages', z_index: 38 },
-    { color: '#016752', fixed_id: 6, group_id: 'camping', name: 'Camping Grounds', z_index: 7 },
+    { color: '#016752', fixed_id: 6, group_id: 'camping_boneyard', name: 'Camping Grounds', z_index: 7 },
     { color: '#A32828', fixed_id: 7, group_id: 'travel_access', name: 'Emergency Exits', z_index: 25 },
     { aliases: ['Free Tap Water'], color: '#57D7E7', fixed_id: 8, group_id: 'food_drink', name: 'Water Fountains', z_index: 34 },
     { color: '#FFFFFF', fixed_id: 9, group_id: 'festival', name: 'First Aid', z_index: 36 },
