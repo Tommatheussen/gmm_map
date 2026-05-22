@@ -56,6 +56,10 @@
   });
 
   $effect(() => {
+    if (appState.baseYear === appState.compareYear) appState.compareYear = null;
+  });
+
+  $effect(() => {
     const url = getYearRoute();
     if (!url || url.href === page.url.href) return;
 
