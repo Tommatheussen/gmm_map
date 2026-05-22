@@ -30,13 +30,21 @@ export interface Category extends CategoryFields {
   fixed_id: number;
   aliases?: readonly string[];
   group_id: CategoryGroupId;
+  subgroup_id?: CategorySubgroupId;
 }
 
 export type CategoryGroupId = string;
+export type CategorySubgroupId = string;
 
 export interface CategoryGroup {
   name: string;
   category_group_id: CategoryGroupId;
+}
+
+export interface CategorySubgroup {
+  name: string;
+  category_group_id: CategoryGroupId;
+  category_subgroup_id: CategorySubgroupId;
 }
 
 export interface YearCategory extends Category {
