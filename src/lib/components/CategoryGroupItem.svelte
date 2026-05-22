@@ -1,28 +1,49 @@
 <script lang="ts">
   import CategoryItem from '$lib/components/CategoryItem.svelte';
+  import CategoryGroupItem from './CategoryGroupItem.svelte';
   import { categoryVisibilityState } from '$lib/data/State.svelte';
-  import type { Category, CategoryGroup } from '$lib/interfaces/Category';
+  import type { Category, CategoryGroupTree } from '$lib/interfaces/Category';
 
-  let {
-    group,
-    categories,
-    forceExpanded = false
-  }: { group: CategoryGroup; categories: Category[]; forceExpanded?: boolean } = $props();
+  let { group, forceExpanded = false }: { group: CategoryGroupTree; forceExpanded?: boolean } =
+    $props();
 
-  let expanded = $state(true);
+  let expanded = $state(false);
   let isExpanded = $derived(forceExpanded || expanded);
+  let visibleCategories = $derived(allCategories(group));
+
+  function allCategories(categoryGroup: CategoryGroupTree): Category[] {
+    return [
+      ...categoryGroup.categories,
+      ...categoryGroup.groups.flatMap((childGroup) => allCategories(childGroup))
+    ];
+  }
+
+  function onlyCategory(categoryGroup: CategoryGroupTree): Category | undefined {
+    const categories = allCategories(categoryGroup);
+
+    return categories.length === 1 ? categories[0] : undefined;
+  }
+
+  let childGroups = $derived(group.groups.filter((childGroup) => !onlyCategory(childGroup)));
+  let childCategories = $derived(
+    group.groups.flatMap((childGroup) => {
+      const category = onlyCategory(childGroup);
+
+      return category ? [category] : [];
+    })
+  );
 
   function isCategoryVisible(category: Category): boolean {
     return categoryVisibilityState[category.fixed_id] !== false;
   }
 
   function isGroupChecked(): boolean {
-    return categories.length > 0 && categories.every(isCategoryVisible);
+    return visibleCategories.length > 0 && visibleCategories.every(isCategoryVisible);
   }
 
   function isGroupMixed(): boolean {
-    const visibleCount = categories.filter(isCategoryVisible).length;
-    return visibleCount > 0 && visibleCount < categories.length;
+    const visibleCount = visibleCategories.filter(isCategoryVisible).length;
+    return visibleCount > 0 && visibleCount < visibleCategories.length;
   }
 
   function toggleExpanded(): void {
@@ -32,7 +53,7 @@
   function toggleGroup(): void {
     const visible = !isGroupChecked();
 
-    for (const category of categories) {
+    for (const category of visibleCategories) {
       categoryVisibilityState[category.fixed_id] = visible;
     }
   }
@@ -78,7 +99,13 @@
 
   {#if isExpanded}
     <div id={`category-group-items-${group.category_group_id}`} class="category-group-items">
-      {#each categories as category (category.fixed_id)}
+      {#each childGroups as childGroup (childGroup.category_group_id)}
+        <CategoryGroupItem group={childGroup} {forceExpanded} />
+      {/each}
+      {#each group.categories as category (category.fixed_id)}
+        <CategoryItem {category} />
+      {/each}
+      {#each childCategories as category (category.fixed_id)}
         <CategoryItem {category} />
       {/each}
     </div>

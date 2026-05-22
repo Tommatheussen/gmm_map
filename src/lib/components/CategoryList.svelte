@@ -1,34 +1,63 @@
 <script lang="ts">
   import { CATEGORY_GROUP_LIST, CATEGORY_LIST } from '$lib/data/Categories';
   import CategoryGroupItem from '$lib/components/CategoryGroupItem.svelte';
-  import type { Category, CategoryGroup } from '$lib/interfaces/Category';
-
-  type VisibleCategoryGroup = CategoryGroup & { categories: Category[] };
+  import type { Category, CategoryGroup, CategoryGroupTree } from '$lib/interfaces/Category';
 
   function matchesSearch(values: readonly string[], query: string): boolean {
     return values.some((value) => value.toLowerCase().includes(query));
+  }
+
+  function matchesCategory(category: Category, query: string): boolean {
+    return matchesSearch([category.name, ...(category.aliases ?? [])], query);
   }
 
   function groupCategories(group: CategoryGroup): Category[] {
     return CATEGORY_LIST.filter((category) => category.group_id === group.category_group_id);
   }
 
-  function filterGroups(query: string): VisibleCategoryGroup[] {
-    return CATEGORY_GROUP_LIST.map((group) => {
-      const categories = groupCategories(group);
-      const groupMatches = matchesSearch([group.name], query);
+  function hasCategories(group: CategoryGroupTree): boolean {
+    return group.categories.length > 0 || group.groups.some(hasCategories);
+  }
 
-      if (!query || groupMatches) {
-        return { ...group, categories };
-      }
+  function buildGroup(group: CategoryGroup): CategoryGroupTree {
+    return {
+      ...group,
+      categories: groupCategories(group),
+      groups: CATEGORY_GROUP_LIST.filter(
+        (childGroup) => childGroup.parent_group_id === group.category_group_id
+      )
+        .map(buildGroup)
+        .filter(hasCategories)
+    };
+  }
 
-      return {
-        ...group,
-        categories: categories.filter((category) =>
-          matchesSearch([category.name, ...(category.aliases ?? [])], query)
-        )
-      };
-    }).filter((group) => group.categories.length > 0);
+  function filterGroup(group: CategoryGroupTree, query: string): CategoryGroupTree | undefined {
+    if (matchesSearch([group.name], query)) return group;
+
+    const filteredGroup = {
+      ...group,
+      categories: group.categories.filter((category) => matchesCategory(category, query)),
+      groups: group.groups
+        .map((childGroup) => filterGroup(childGroup, query))
+        .filter((childGroup): childGroup is CategoryGroupTree => childGroup !== undefined)
+    };
+
+    return hasCategories(filteredGroup) ? filteredGroup : undefined;
+  }
+
+  function rootGroups(): CategoryGroupTree[] {
+    return CATEGORY_GROUP_LIST.filter((group) => !group.parent_group_id)
+      .map(buildGroup)
+      .filter(hasCategories);
+  }
+
+  function filterGroups(query: string): CategoryGroupTree[] {
+    const groups = rootGroups();
+    if (!query) return groups;
+
+    return groups
+      .map((group) => filterGroup(group, query))
+      .filter((group): group is CategoryGroupTree => group !== undefined);
   }
 
   let searchQuery = $state('');
@@ -48,11 +77,7 @@
 
   <div class="category-list">
     {#each filteredCategoryGroups as group (group.category_group_id)}
-      <CategoryGroupItem
-        {group}
-        categories={group.categories}
-        forceExpanded={normalizedSearchQuery.length > 0}
-      />
+      <CategoryGroupItem {group} forceExpanded={normalizedSearchQuery.length > 0} />
     {/each}
 
     {#if !hasFilteredCategories}

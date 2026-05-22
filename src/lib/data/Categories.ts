@@ -8,7 +8,7 @@ export const CATEGORY_LIST: readonly Category[] = Object.freeze(
     { color: '#529CFF', fixed_id: 3, group_id: 'festival', name: 'Activities', z_index: 41 },
     { color: '#8354CF', fixed_id: 4, group_id: 'festival', name: 'Partners', z_index: 40 },
     { color: '#580025', fixed_id: 5, group_id: 'festival', name: 'Stages', z_index: 38 },
-    { color: '#016752', fixed_id: 6, group_id: 'camping', name: 'Camping Grounds', z_index: 7 },
+    { color: '#016752', fixed_id: 6, group_id: 'camping_boneyard', name: 'Camping Grounds', z_index: 7 },
     { color: '#A32828', fixed_id: 7, group_id: 'travel_access', name: 'Emergency Exits', z_index: 25 },
     { aliases: ['Free Tap Water'], color: '#57D7E7', fixed_id: 8, group_id: 'food_drink', name: 'Water Fountains', z_index: 34 },
     { color: '#FFFFFF', fixed_id: 9, group_id: 'festival', name: 'First Aid', z_index: 36 },
@@ -47,25 +47,33 @@ export const CATEGORY_LIST: readonly Category[] = Object.freeze(
     { aliases: ['Tent Tribune'], color: '#7D767E', fixed_id: 42, group_id: 'other', name: 'Tribune', z_index: 9 },
     { color: '#000000', fixed_id: 43, group_id: 'other', name: 'Crosses', z_index: 11 },
     { aliases: ['Light Green Ground'], color: '#CADC8C', fixed_id: 44, group_id: 'map_areas', name: 'Light Green Camping Grounds', z_index: 0 },
-    { aliases: ['Camping Ground Friends Zones'], color: '#ffcc00', fixed_id: 10000, group_id: 'camping', name: 'Friends Zone', z_index: 0 },
-    { aliases: ['Camping Ground CBY Festitent'], color: '#6b6342', fixed_id: 10001, group_id: 'camping', name: 'Festitent', z_index: 0 },
-    { color: '#6b6342', fixed_id: 10002, group_id: 'camping', name: 'Festihut', z_index: 0 },
-    { aliases: ['Camping ground Boutique'], color: '#ffcc00', fixed_id: 10003, group_id: 'camping', name: 'Boutique Tents', z_index: 0 },
-    { color: '#ffcc00', fixed_id: 10004, group_id: 'camping', name: 'Metal Town', z_index: 0 },
-    { aliases: ['The Crypt Camping Ground'], color: '#ffcc00', fixed_id: 10005, group_id: 'camping', name: 'The Crypt', z_index: 0 }
+    { aliases: ['Camping Ground Friends Zones'], color: '#ffcc00', fixed_id: 10000, group_id: 'camping_boneyard', name: 'Friends Zone', z_index: 0 },
+    { aliases: ['Camping Ground CBY Festitent'], color: '#6b6342', fixed_id: 10001, group_id: 'camping_boneyard', name: 'Festitent', z_index: 0 },
+    { color: '#6b6342', fixed_id: 10002, group_id: 'camping_inferno', name: 'Festihut', z_index: 0 },
+    { aliases: ['Camping ground Boutique'], color: '#ffcc00', fixed_id: 10003, group_id: 'camping_inferno', name: 'Boutique Tents', z_index: 0 },
+    { color: '#ffcc00', fixed_id: 10004, group_id: 'camping_metal_town', name: 'Metal Town', z_index: 0 },
+    { aliases: ['The Crypt Camping Ground'], color: '#ffcc00', fixed_id: 10005, group_id: 'camping_the_crypt', name: 'The Crypt', z_index: 0 },
+    { color: '#6b6342', fixed_id: 10006, group_id: 'camping_inferno', name: 'Tip-Up', z_index: 0 },
+    { color: '#6b6342', fixed_id: 10007, group_id: 'camping_inferno', name: 'Canvas Hut', z_index: 0 },
+    { color: '#6b6342', fixed_id: 10008, group_id: 'camping_inferno', name: 'Group Tents', z_index: 0 },
+    { color: '#6b6342', fixed_id: 10009, group_id: 'camping_inferno', name: 'Inter', z_index: 0 }
   ].sort((a, b) => b.z_index - a.z_index)
 );
 
-const CATEGORY_GROUP_REGISTRY: Readonly<Record<CategoryGroupId, string>> = Object.freeze({
-  food_drink: 'Food & Drink',
-  festival: 'Festival',
-  camping: 'Camping',
-  travel_access: 'Travel & Access',
-  other: 'Other',
-  map_areas: 'Map Areas'
+const CATEGORY_GROUP_REGISTRY: Readonly<Record<CategoryGroupId, Omit<CategoryGroup, 'category_group_id'>>> = Object.freeze({
+  food_drink: { name: 'Food & Drink', parent_group_id: 'festival' },
+  festival: { name: 'Festival' },
+  camping: { name: 'Camping' },
+  camping_boneyard: { name: 'Boneyard', parent_group_id: 'camping' },
+  camping_inferno: { name: 'Inferno', parent_group_id: 'camping' },
+  camping_metal_town: { name: 'Metal Town', parent_group_id: 'camping' },
+  camping_the_crypt: { name: 'The Crypt', parent_group_id: 'camping' },
+  travel_access: { name: 'Travel & Access' },
+  other: { name: 'Other' },
+  map_areas: { name: 'Map Areas', parent_group_id: 'other' }
 });
 
-export const CATEGORY_GROUP_LIST = Object.freeze(Object.entries(CATEGORY_GROUP_REGISTRY).map<CategoryGroup>(([categoryGroupId, name]) => ({ category_group_id: categoryGroupId, name })));
+export const CATEGORY_GROUP_LIST = Object.freeze(Object.entries(CATEGORY_GROUP_REGISTRY).map<CategoryGroup>(([categoryGroupId, group]) => ({ ...group, category_group_id: categoryGroupId })));
 
 export const FIXED_ID_CATEGORY_REGISTRY = Object.freeze(
   CATEGORY_LIST.reduce<Record<number, Category>>((mapping, category) => {
