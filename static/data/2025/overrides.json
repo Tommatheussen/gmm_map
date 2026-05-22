@@ -6,5 +6,58 @@
     "15492": {
       "fixed_id": 10002
     }
+  },
+  "pois": {
+    "339722": {
+      "category_fixed_id": 10004
+    },
+    "339723": {
+      "category_fixed_id": 10004
+    },
+    "339724": {
+      "category_fixed_id": 10004
+    },
+    "339725": {
+      "category_fixed_id": 10005
+    },
+    "339726": {
+      "category_fixed_id": 10005
+    },
+    "339727": {
+      "category_fixed_id": 10005
+    },
+    "339728": {
+      "category_fixed_id": 10005
+    },
+    "339729": {
+      "category_fixed_id": 10005
+    },
+    "339730": {
+      "category_fixed_id": 10005
+    },
+    "339716": {
+      "category_fixed_id": 10003
+    },
+    "339715": {
+      "category_fixed_id": 10006
+    },
+    "339714": {
+      "category_fixed_id": 10009
+    },
+    "339717": {
+      "category_fixed_id": 10009
+    },
+    "339718": {
+      "category_fixed_id": 10007
+    },
+    "339720": {
+      "category_fixed_id": 10008
+    },
+    "339721": {
+      "category_fixed_id": 10008
+    },
+    "339719": {
+      "category_fixed_id": 10006
+    }
   }
 }
