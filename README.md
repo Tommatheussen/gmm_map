@@ -33,10 +33,11 @@ Built with:
 All map data is based on **official Graspop Metal Meeting app data**, which is publicly accessible.
 Data is fetched using [Bruno](https://www.usebruno.com/) and minimally processed — mostly removing unnecessary top-level properties — before being stored as structured JSON files:
 
-- `layers.json` — defines POI categories and visual styling
-- `pois.json` — contains coordinates, polygons, and metadata for map elements
+- `layers.json`: defines POI categories and visual styling
+- `pois.json`: contains coordinates, polygons, and metadata for map elements
+- `overrides.json`: allows overriding of source data, while preserving the original. This helps us move data accross different years to the same layers.
 
-Each year has its own data folder containing these two files.
+Each year has its own data folder containing these three files.
 
 > ⚠️ Data © Graspop Metal Meeting. This project is a **fan-made visualization tool** and not affiliated with the festival organizers.
 
@@ -68,10 +69,10 @@ This project is fully containerized — **no local setup needed** beyond Docker 
 
 Contributions are welcome!
 
-- Create a new branch from main
+- Create a new branch from `dev`
 - Make your changes
 - Run the format/lint checks
-- Submit a Pull Request against main
+- Submit a Pull Request against `dev`
 
 Pre-commit hooks and ESLint will verify formatting and code consistency automatically.
 
@@ -88,6 +89,4 @@ This project is licensed under the MIT License — see the [LICENSE](./LICENSE) 
 Festival data © Graspop Metal Meeting — used for educational and fan purposes only.
 
 ## 🏗️ Roadmap / Ideas
-
-- [ ] Add grouped categories (not from source data though)
 - [ ] Responsive, mobile layout?
