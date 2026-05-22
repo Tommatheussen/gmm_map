@@ -32,7 +32,7 @@ export const CATEGORY_LIST: readonly Category[] = Object.freeze(
     { color: '#505D6D', fixed_id: 27, group_id: 'travel_access', name: 'Disability Parking', z_index: 19 },
     { aliases: ['Cashless Helpdesk'], color: '#1F66B8', fixed_id: 28, group_id: 'festival', name: 'ATM', z_index: 18 },
     { color: '#F86274', fixed_id: 29, group_id: 'travel_access', name: 'Kiss & Ride', z_index: 17 },
-    { aliases: ['Shops'], color: '#AA5E1B', fixed_id: 30, group_id: 'festival', name: 'Merchandise', z_index: 16 },
+    { aliases: ['Merchandise'], color: '#AA5E1B', fixed_id: 30, group_id: 'festival', name: 'Shops', z_index: 16 },
     { aliases: ['Recycle Point'], color: '#7AA54F', fixed_id: 31, group_id: 'festival', name: 'Recycle Points', z_index: 15 },
     { color: '#C94959', fixed_id: 32, group_id: 'festival', name: 'Lockers', z_index: 37 },
     { color: '#04052E', fixed_id: 33, group_id: 'festival', name: 'WiFi Zone', z_index: 13 },

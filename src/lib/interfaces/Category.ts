@@ -1,3 +1,5 @@
+import type { PoiOverride } from './Poi';
+
 interface CategoryFields {
   name: string;
   z_index: number;
@@ -47,4 +49,5 @@ export interface LayerOverride {
 
 export interface DataOverrides {
   layers?: Record<string, LayerOverride>;
+  pois?: Record<string, PoiOverride>;
 }

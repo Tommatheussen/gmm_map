@@ -2,11 +2,17 @@ export interface Poi {
   id: number;
   name: string;
   category_id: number;
+  category_fixed_id?: number;
+  published: boolean;
   type: 'polygon';
   coordinates: { lat: number; lng: number }[];
-  deleted_at: Date;
+  deleted_at?: string | null;
   tags: PoiTag[];
 }
+
+export type PoiOverride = Partial<
+  Pick<Poi, 'name' | 'category_id' | 'category_fixed_id' | 'deleted_at' | 'tags'>
+>;
 
 export interface PoiTag {
   slug: string;

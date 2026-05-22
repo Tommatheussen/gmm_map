@@ -3,5 +3,13 @@
     "6169": {
       "fixed_id": 9
     }
+  },
+  "pois": {
+    "294910": {
+      "category_fixed_id": 10004
+    },
+    "294308": {
+      "category_fixed_id": 2
+    }
   }
 }
